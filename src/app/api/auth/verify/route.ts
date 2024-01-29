@@ -26,16 +26,6 @@ export async function GET(req: NextRequest) {
 
   const otp = await db.otp.find(data.id);
 
-  // const otp = await db.otp.findFirst({
-  //   where: {
-  //     userId: params.data.id,
-  //     code: params.data.code,
-  //   },
-  //   orderBy: {
-  //     userId: "desc",
-  //   },
-  // });
-
   if (!otp || otp.code.toString() !== params.data.code) {
     RedirectUrl.searchParams.set("message", "not valid Link, try again");
     RedirectUrl.searchParams.set("state", "err");
@@ -46,7 +36,7 @@ export async function GET(req: NextRequest) {
 
   await db.otp.delete(otp.id)
 
-  return NextResponse.redirect(new URL("/user/profile", req.url), {
+  return NextResponse.redirect(new URL("/user", req.url), {
     headers: {
       "Set-Cookie": `auth=${token}; Max-Age=86400; Path=/; HttpOnly`,
     },

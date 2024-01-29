@@ -1,4 +1,4 @@
-export function tryCatchWrapper(fn: () => void) {
+export function tryCatchWrapper(fn: () => void , fnEr:(arg1: unknown) => void) {
   try {
     fn();
   } catch (error) {
