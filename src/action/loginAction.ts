@@ -1,11 +1,8 @@
 "use server";
-
-import prisma from "@/prisma";
+import db from "@/database";
 import { FnFormAction } from "@/types";
-import {  CreateOTP, FindOPT } from "@/utils/db";
 import MailService from "@/utils/email";
 import { checkPassword } from "@/utils/hash";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const loginFormSchema = z.object({
@@ -23,27 +20,27 @@ export const loginAction: FnFormAction = async (formData) => {
 
   if (!parsedObj.success) throw new Error(parsedObj.error.message);
 
-  const foundUser = await prisma.user.findFirst({
-    where: { email: parsedObj.data.email },
-  });
+  const {
+    data: { email, password, origin },
+  } = parsedObj;
+
+  const foundUser = await db.user.findByEmail(email);
 
   if (!foundUser) throw new Error("User not found");
 
-  const isAuth = await checkPassword(
-    parsedObj.data.password,
-    foundUser.password
-  );
+  const isAuth = await checkPassword(password, foundUser.password);
 
   if (!isAuth) throw new Error("not valid password");
 
-  const OTP = await FindOPT(foundUser.id) || await CreateOTP(foundUser.id)
+  const OTP =
+    (await db.otp.find(foundUser.id)) || (await db.otp.new(foundUser.id));
 
   const mailer = new MailService({
     pass: process.env.EMAIL_TOKEN,
     user: process.env.EMAIL_ADDRESS,
   });
 
-  const u = new URL("/api/auth/verify", parsedObj.data.origin);
+  const u = new URL("/api/auth/verify", origin);
   u.searchParams.set("code", OTP.code.toString());
   u.searchParams.set("id", foundUser.id);
 
@@ -58,6 +55,4 @@ export const loginAction: FnFormAction = async (formData) => {
   } catch (err) {
     throw new Error("Failed to send OPT email");
   }
-
-
 };

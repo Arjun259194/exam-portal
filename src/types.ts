@@ -1,4 +1,4 @@
-export type FnFormAction = (arg2: FormData) => Promise<void>
+export type FnFormAction = (arg1: FormData) => Promise<void>
 
 
 

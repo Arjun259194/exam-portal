@@ -1,5 +1,5 @@
-import prisma from "@/prisma";
-import { newToken } from "@/utils/jwt";
+import db from "@/database";
+import { JWTToken } from "@/utils/jwt";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
@@ -22,15 +22,19 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(RedirectUrl);
   }
 
-  const otp = await prisma.otp.findFirst({
-    where: {
-      userId: params.data.id,
-      code: params.data.code,
-    },
-    orderBy: {
-      userId: "desc",
-    },
-  });
+  const { data } = params;
+
+  const otp = await db.otp.find(data.id);
+
+  // const otp = await db.otp.findFirst({
+  //   where: {
+  //     userId: params.data.id,
+  //     code: params.data.code,
+  //   },
+  //   orderBy: {
+  //     userId: "desc",
+  //   },
+  // });
 
   if (!otp || otp.code.toString() !== params.data.code) {
     RedirectUrl.searchParams.set("message", "not valid Link, try again");
@@ -38,13 +42,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(RedirectUrl);
   }
 
-  const token = newToken(otp.userId);
+  const token = JWTToken.create(otp.userId);
 
-  await prisma.otp.delete({
-    where: {
-      id: otp.id,
-    },
-  });
+  await db.otp.delete(otp.id)
 
   return NextResponse.redirect(new URL("/user/profile", req.url), {
     headers: {

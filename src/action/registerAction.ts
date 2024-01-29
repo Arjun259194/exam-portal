@@ -1,8 +1,6 @@
 "use server";
-
-import prisma from "@/prisma";
+import db from "@/database";
 import { FnFormAction } from "@/types";
-import { hashPassword } from "@/utils/hash";
 import { z } from "zod";
 
 const registerFormSchema = z.object({
@@ -23,10 +21,11 @@ export const registerAction: FnFormAction = async (formData) => {
   if (!parseData.success) throw new Error(parseData.error.message);
 
   const { data } = parseData;
+  const foundUser = await db.user.findByEmail(data.email);
 
-  await prisma.user.create({
-    data: { ...data, password: await hashPassword(data.password) },
-  });
+  if (foundUser) throw new Error("Email already used by other user!");
+
+  await db.user.new(data);
 
   return;
 };
