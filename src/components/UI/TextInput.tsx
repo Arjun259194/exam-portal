@@ -10,7 +10,7 @@ interface Props {
 
 const InputText: FC<Props> = ({ children, type, required, name, text }) => {
     return (
-        <div className="relative flex flex-col">
+        <div className="relative flex flex-col space-y-2">
             <label
                 className="text-gray-500 font-semibold capitalize text-lg"
                 htmlFor={name}>
@@ -19,7 +19,7 @@ const InputText: FC<Props> = ({ children, type, required, name, text }) => {
             <input
                 id={name}
                 name={name}
-                className="shadow-md border border-gray-400 text-base px-2 py-1 rounded-md outline-none"
+                className="shadow-md focus:border-blue-500 border border-gray-400 text-base px-2 py-1 rounded-md outline-none"
                 type={type}
                 required={!!required}
                 placeholder=" "></input>

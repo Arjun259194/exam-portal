@@ -184,7 +184,9 @@ export default class MailService {
   <div class="email-container">
     <p>Dear User,</p>
     <p>Please click the button below to verify your email address:</p>
-    <a class="button" href="${option.url}">Verify Email</a>
+    <button class="button">
+      <a href="${option.url}">Verify Email</a>
+    </button>
     <p>If you are unable to click the button above, you can also <a href="${option.url}">click here</a> or copy/paste the following URL into your browser:</p>
     <p>${option.url}</p>
     <p>Thank you!</p>
@@ -193,43 +195,4 @@ export default class MailService {
 </html>
 `;
   }
-
-  //     private verificationMailHTML(option: {
-  //         username: string;
-  //         code: number;
-  //         url: string;
-  //     }) {
-  //         return `<!DOCTYPE html>
-  // <html>
-  // <head>
-  //   <title>Email Verification</title>
-  //   <style>
-  //     /* Style for the button */
-  //     .button {
-  //       display: inline-block;
-  //       font-size: 16px;
-  //       font-weight: bold;
-  //       padding: 10px 20px;
-  //       text-decoration: none;
-  //       color: #ffffff;
-  //       background-color: #007bff;
-  //       border-radius: 5px;
-  //     }
-  //     /* Style for the button hover effect */
-  //     .button:hover {
-  //       background-color: #0056b3;
-  //     }
-  //   </style>
-  // </head>
-  // <body>
-  //   <p>Dear User,</p>
-  //   <p>Please click the button below to verify your email address:</p>
-  //   <a class="button" href="${option.url}">Verify Email</a>
-  //   <p>If you are unable to click the button above, you can also <a href="${option.url}">click here</a> or copy/paste the following URL into your browser:</p>
-  //   <p>${option.url}</p>
-  //   <p>Thank you!</p>
-  // </body>
-  // </html>
-  // `;
-  //     }
 }
