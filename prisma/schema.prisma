@@ -15,13 +15,23 @@ enum UserType {
   TEACHER
 }
 
+enum TestType {
+  MCQ
+  WRITTEN
+}
+
 model User {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  type     UserType
+  type     UserType 
   username String
-  email    String @unique
-  password String 
-  Otp            Otp[]
+  email    String   @unique
+  password String
+  Otp      Otp[]
+}
+
+model MCQTest {
+  id         String        @id @default(auto()) @map("_id") @db.ObjectId
+  questions  MCQQuestion[]
 }
 
 model WrittenQuenstion {
@@ -32,14 +42,13 @@ model WrittenQuenstion {
 }
 
 model MCQQuestion {
-  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  MCQTest  MCQTest  @relation(fields: [testId], references: [id])
+  testId   String   @db.ObjectId
   question String
-  marsk Int
-  choices String[] 
+  marsk    Int
+  choices  String[]
 }
-
-
-
 
 model Otp {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
@@ -47,5 +56,3 @@ model Otp {
   code   String
   userId String @db.ObjectId
 }
-
-

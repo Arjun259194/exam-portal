@@ -21,11 +21,15 @@ export const registerAction: FnFormAction = async (formData) => {
   if (!parseData.success) throw new Error(parseData.error.message);
 
   const { data } = parseData;
-  const foundUser = await db.user.findByEmail(data.email);
+
+  const foundUser = await db.user.findByEmail(data.email)
 
   if (foundUser) throw new Error("Email already used by other user!");
 
-  await db.user.new(data);
+  await db.user.new(data).catch(err => {
+    console.log(err)
+    throw new Error("Failed to register new user")
+  })
 
   return;
 };

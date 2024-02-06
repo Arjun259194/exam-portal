@@ -7,8 +7,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button: FC<ButtonProps> = ({ variant, className, children, ...props }) => {
   return (
     <button
-      className={`rounded-full border-2 py-0.5 px-6  capitalize transition-all hover:brightness-110 ${
-        variant === "primary" ? "border-blue-500 bg-blue-500 text-blue-50" : "border-blue-500 bg-blue-50 text-blue-600"
+      className={`
+      active:scale-90
+      rounded-full border-2 py-1 px-2  capitalize transition-all duration-75 hover:brightness-110 font-semibold ${
+        variant === "primary" ? "border-green-500 bg-green-500 text-green-50" : "border-green-500 bg-green-50 text-green-500"
       } ${className}`}
       {...props}
     >

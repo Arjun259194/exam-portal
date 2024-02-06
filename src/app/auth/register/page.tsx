@@ -11,7 +11,7 @@ function page() {
         <p>New? Join us and have a flowless expireance</p>
         <RegisterForm action={registerAction} />
         <p>Already have an account?  {" "}
-        <Link className="text-blue-500 underline font-semibold capitalize" href="/auth/login">Login</Link>
+        <Link className="text-green-500 underline font-semibold capitalize" href="/auth/login">Login</Link>
         </p>
       </section>
     </main>

@@ -14,7 +14,7 @@ function page() {
         <p className="text-center">Welcome back! rejoin us in the perfact flow of study and work</p>
         <LoginForm action={loginAction} />
         <p>Don't have an account?  {" "}
-        <Link className="text-blue-500 underline font-semibold capitalize" href="/auth/register">Register</Link>
+        <Link className="text-green-500 underline font-semibold capitalize" href="/auth/register">Register</Link>
         </p>
       </section>
     </main>

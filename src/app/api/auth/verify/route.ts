@@ -1,6 +1,7 @@
 import db from "@/database";
 import { JWTToken } from "@/utils/jwt";
 import { NextRequest, NextResponse } from "next/server";
+import { abort } from "process";
 import z from "zod";
 
 const queryParam = z.object({ code: z.string(), id: z.string() });

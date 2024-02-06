@@ -1,9 +1,14 @@
 import { compare, hash } from "bcrypt";
 
-export const hashPassword = 
-    async (password: string, SALT_ROUND: number = 10) =>
-        await hash(password, SALT_ROUND);
+export class PasswordHash {
 
-export const checkPassword = 
-    async (password: string, hashPassword: string) =>
-        await compare(password, hashPassword);
+    static SALT_ROUND: number = 10;
+
+    static async new(data: string, saltRounds?: number) {
+        return await hash(data, saltRounds ?? this.SALT_ROUND)
+    }
+
+    static async check(data: string, encrypted: string) {
+        return await compare(data, encrypted)
+    }
+}

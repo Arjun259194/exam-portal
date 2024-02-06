@@ -2,7 +2,7 @@
 import db from "@/database";
 import { FnFormAction } from "@/types";
 import MailService from "@/utils/email";
-import { checkPassword } from "@/utils/hash";
+import { PasswordHash } from "@/utils/hash";
 import { z } from "zod";
 
 const loginFormSchema = z.object({
@@ -28,7 +28,7 @@ export const loginAction: FnFormAction = async (formData) => {
 
   if (!foundUser) throw new Error("User not found");
 
-  const isAuth = await checkPassword(password, foundUser.password);
+  const isAuth = await PasswordHash.check(password, foundUser.password);
 
   if (!isAuth) throw new Error("not valid password");
 
