@@ -1,4 +1,4 @@
-import { PasswordHash } from "@/utils/hash";
+import { PasswordHash } from "@/lib/hash";
 import { PrismaClient } from "@prisma/client";
 import { type User } from "@prisma/client";
 

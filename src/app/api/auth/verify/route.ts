@@ -1,7 +1,7 @@
 import db from "@/database";
-import { JWTToken } from "@/utils/jwt";
+import { AuthCookie } from "@/lib/cookie";
+import { JWTToken } from "@/lib/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import { abort } from "process";
 import z from "zod";
 
 const queryParam = z.object({ code: z.string(), id: z.string() });
@@ -37,9 +37,7 @@ export async function GET(req: NextRequest) {
 
   await db.otp.delete(otp.id)
 
-  return NextResponse.redirect(new URL("/user", req.url), {
-    headers: {
-      "Set-Cookie": `auth=${token}; Max-Age=86400; Path=/; HttpOnly`,
-    },
-  });
+  AuthCookie.new(token)
+
+  return NextResponse.redirect(new URL("/user", req.url))
 }

@@ -1,6 +1,6 @@
 import NewMcqForm from "@/components/test/NewMcqForm";
 import db from "@/database";
-import { JWTToken } from "@/utils/jwt";
+import { JWTToken } from "@/lib/jwt";
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation";
 
@@ -21,7 +21,7 @@ async function page() {
   if (user.type == "STUDENT") redirect("/")
 
   return (
-    <div>
+    <div className="w-2/3 mx-auto p-2">
       <NewMcqForm />
     </div>
   )

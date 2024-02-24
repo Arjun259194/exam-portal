@@ -1,7 +1,5 @@
-import Lottie from "lottie-react";
-// import LoadingAnimation from "../assets/Loading_animation.json";
+import { RefreshCcw } from "lucide-react";
 
 export default function Loading() {
-  // return <Lottie animationData={LoadingAnimation} />;
-  return <><p>loading...</p></>
+  return <span><RefreshCcw /></span>
 }

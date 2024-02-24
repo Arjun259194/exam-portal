@@ -4,11 +4,12 @@ import type { LucideIcon } from 'lucide-react'
 
 type Props = Parameters<typeof Button>[0] & {
     Icon: LucideIcon
+    reverse: boolean
 }
 
-const IconButton: React.FC<Props> = ({ children, Icon, className, ...props }) => {
+const IconButton: React.FC<Props> = ({ children, Icon, reverse, className, ...props }) => {
     return (
-        <Button className={`flex items-center gap-1 ${className}`} {...props}>
+        <Button className={`flex ${!reverse ? "flex-row" : "flex-row-reverse"} items-center gap-1 ${className}`} {...props}>
             <span>
                 <Icon className='' />
             </span>

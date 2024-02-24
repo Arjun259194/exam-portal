@@ -1,14 +1,7 @@
 "use server";
 import db from "@/database";
+import { registerFormSchema } from "@/lib/schema";
 import { FnFormAction } from "@/types";
-import { z } from "zod";
-
-const registerFormSchema = z.object({
-  username: z.string(),
-  email: z.string().email(),
-  type: z.enum(["STUDENT", "TEACHER"]),
-  password: z.string().min(8).max(16),
-});
 
 export const registerAction: FnFormAction = async (formData) => {
   const parseData = registerFormSchema.safeParse({

@@ -35,15 +35,15 @@ const RegisterForm: FC<{ action: FnFormAction }> = ({
       <InputText name="email" text="Email" type="email" required />
       <div className="">
         <p className="text-gray-500 font-semibold capitalize text-lg">Role:</p>
-        <div className="flex w-full items-center space-x-5"> 
-        <label className="flex items-center space-x-1">
-          <input type="radio" name="role" value="STUDENT" required />
-          <span>STUDENT</span>
-        </label>
-        <label className="flex items-center space-x-1">
-          <input type="radio" name="role" value="TEACHER" required />
-          <span>TEACHER</span>
-        </label>
+        <div className="flex w-full items-center space-x-5">
+          <label className="flex items-center space-x-1">
+            <input type="radio" name="role" value="STUDENT" required />
+            <span>STUDENT</span>
+          </label>
+          <label className="flex items-center space-x-1">
+            <input type="radio" name="role" value="TEACHER" required />
+            <span>TEACHER</span>
+          </label>
         </div>
       </div>
       <InputText
