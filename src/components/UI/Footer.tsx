@@ -1,7 +1,3 @@
-// Footer.tsx
-
-import React from 'react';
-
 const Footer: React.FC = () => {
   return (
     <footer className="bg-green-600 p-8 text-white">

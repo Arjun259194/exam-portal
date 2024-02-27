@@ -13,9 +13,7 @@ export class MCQOperations {
     this.mcqQuestion = q;
   }
 
-  public addQuestions() {
-
-  }
+  public addQuestions() {}
 
   public async new(userID: string, data: Question[]) {
     const res = await this.mcqTest.create({ data: { userId: userID } });
@@ -25,6 +23,9 @@ export class MCQOperations {
         return await this.mcqQuestion.create({
           data: {
             ...q,
+            title: "TODO",
+            subject: "TODO",
+            publish: false,
             MCQTest: {
               connect: { id: res.id },
             },
@@ -39,13 +40,13 @@ export class MCQOperations {
 
   public async getMany(userID: string) {
     return await this.mcqTest.findMany({
-      where: { userId: userID },
+      // where: { userId: userID },
       include: { questions: true, user: true },
     });
   }
 
   // public async delete(id: string) {
-  //   return await this.mcqTest.delete() 
+  //   return await this.mcqTest.delete()
   // }
 
   public async get(testId: string) {

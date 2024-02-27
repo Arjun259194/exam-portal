@@ -1,4 +1,3 @@
-"use server";
 import { loginAction } from "@/action/loginAction";
 import LoginForm from "@/components/Auth/LoginForm";
 import Link from "next/link";

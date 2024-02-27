@@ -41,6 +41,7 @@ function NewMcqForm() {
       toast.success("Test created 👍");
       window.location.href = "/user/test";
     } catch (error) {
+      console.log(error)
       toast.error("Failed to create the test");
     } finally {
       setLoading(false);
@@ -120,7 +121,7 @@ function NewMcqForm() {
           ))}
         </div>
         <div className="w-full justify-between flex items-center gap-3">
-          <IconButton Icon={Plus} type="submit" variant="secondary">
+          <IconButton Icon={Plus} type="submit" variant="secondary" reverse={false}>
             {" "}
             Add question{" "}
           </IconButton>
@@ -128,10 +129,9 @@ function NewMcqForm() {
             onClick={(e) => {
               e.preventDefault();
               createTest();
-            }}
+            } }
             Icon={Send}
-            variant="primary"
-          >
+            variant="primary" reverse={false}          >
             Create
           </IconButton>
         </div>

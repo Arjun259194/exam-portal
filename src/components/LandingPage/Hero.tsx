@@ -20,7 +20,7 @@ const Hero = () => {
           className="text-xl"
           variant="primary"
         >
-          <Link href="/test">Get Started</Link>
+          <Link href="/user/test">Get Started</Link>
         </IconButton>
       </div>
       <div className="relative">

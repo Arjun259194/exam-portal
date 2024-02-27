@@ -10,7 +10,7 @@ export default function SimpleLayout({
     <>
       <Header />
       <main>{children}</main>
-    <Footer />
+      <Footer />
     </>
   );
 }
