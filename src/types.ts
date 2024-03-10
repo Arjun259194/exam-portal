@@ -1,5 +1,7 @@
 import { Question } from "./utils/classes";
 
+export type UserRole = "TEACHER"|"STUDENT" //TODO make it type safe
+
 export type FnFormAction = (arg1: FormData) => Promise<void>
 
 export type Choices = [string, string, string, string]
@@ -9,6 +11,5 @@ export type Prettify<T> = {
 } & {};
 
 export type ClassName = string | undefined
-
 
 export type NewMcqTest = Array<Question>

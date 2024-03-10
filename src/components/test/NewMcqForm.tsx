@@ -12,13 +12,15 @@ import axios from "axios";
 function NewMcqForm() {
   const [loading, setLoading] = useState<boolean>(false);
   const [formState, setFormState] = useState<Question>(new Question());
+  const [title, setTitle] = useState<string>("");
+  const [subject, setSubject] = useState<string>("");
   const [questions, setQuestions] = useState<Array<Question>>([]);
 
   const addQuestion = (q: Question) => setQuestions([...questions, q]);
 
   const optionChangeHandler = (
     index: number,
-    event: ChangeEvent<HTMLInputElement>
+    event: ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = event.target;
     setFormState((prevState) => {
@@ -37,11 +39,11 @@ function NewMcqForm() {
   const createTest = async () => {
     setLoading(true);
     try {
-      await axios.post("/api/mcq/test/new", questions);
+      await axios.post("/api/mcq/test/new", {title, subject, questions});
       toast.success("Test created 👍");
       window.location.href = "/user/test";
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.error("Failed to create the test");
     } finally {
       setLoading(false);
@@ -63,86 +65,124 @@ function NewMcqForm() {
         </>
       ) : null}
 
-      <form onSubmit={submitHandler} className="mb-8">
-        <div className="grid grid-cols-4">
-          <label className="col-span-3" htmlFor="question">
-            Question
-          </label>
-          <label className="" htmlFor="marks">
-            Marks
-          </label>
-          <input
-            required
-            id="question"
-            className={`${inputStyle} col-span-3`}
-            onChange={(e) =>
-              setFormState((prev) => ({ ...prev, question: e.target.value }))
-            }
-            value={formState.question}
-            name="question"
-            type="text"
-            placeholder="Enter your question"
-          />
-          <input
-            required
-            className={`${inputStyle}`}
-            id="marks"
-            onChange={(e) => {
-              const { value } = e.target;
-              setFormState({
-                ...formState,
-                marks: value === "" ? 0 : parseInt(value),
-              });
-            }}
-            name="marks"
-            value={formState.marks}
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]+"
-            placeholder="Enter marks"
-          />
-        </div>
-        <div className="grid grid-cols-4 gap-1">
-          <label className="col-span-4" htmlFor="option_1">
-            Choices
-          </label>
-          {formState.choices.map((option, index) => (
+      <div className="grid grid-cols-2 gap-2">
+        <form onSubmit={submitHandler} className="mb-8">
+          <div className="grid border-2 border-gray-200 rounded-lg p-2 grid-cols-4">
+            <label className="col-span-3" htmlFor="title">
+              Test Title
+            </label>
+            <label className="" htmlFor="subject">
+              Subject Name
+            </label>
             <input
-              key={index}
-              type="text"
-              value={option}
-              name={`option_${index}`}
-              id={`option_${index}`}
-              onChange={(e) => optionChangeHandler(index, e)}
-              placeholder={`Option ${index + 1}`}
-              className={`${inputStyle}`}
               required
+              id="title"
+              className={`${inputStyle} col-span-3`}
+              onChange={(e) => setTitle((_) => e.target.value)}
+              value={title}
+              name="title"
+              type="text"
+              placeholder="Enter your question"
             />
-          ))}
-        </div>
-        <div className="w-full justify-between flex items-center gap-3">
-          <IconButton Icon={Plus} type="submit" variant="secondary" reverse={false}>
-            {" "}
-            Add question{" "}
-          </IconButton>
-          <IconButton
-            onClick={(e) => {
-              e.preventDefault();
-              createTest();
-            } }
-            Icon={Send}
-            variant="primary" reverse={false}          >
-            Create
-          </IconButton>
-        </div>
-      </form>
+            <input
+              required
+              className={`${inputStyle}`}
+              id="subject"
+              onChange={(e) => setSubject((_) => e.target.value)}
+              name="marks"
+              value={subject}
+              type="text"
+            />
+          </div>
 
-      <McqQuestions
-        update={(q) => {
-          setQuestions(q);
-        }}
-        questions={questions}
-      />
+          <div className="grid grid-cols-4 p-2">
+            <label className="col-span-3" htmlFor="question">
+              Question
+            </label>
+            <label className="" htmlFor="marks">
+              Marks
+            </label>
+            <input
+              required
+              id="question"
+              className={`${inputStyle} col-span-3`}
+              onChange={(e) =>
+                setFormState((prev) => ({ ...prev, question: e.target.value }))
+              }
+              value={formState.question}
+              name="question"
+              type="text"
+              placeholder="Enter your question"
+            />
+            <input
+              required
+              className={`${inputStyle}`}
+              id="marks"
+              onChange={(e) => {
+                const { value } = e.target;
+                setFormState({
+                  ...formState,
+                  marks: value === "" ? 0 : parseInt(value),
+                });
+              }}
+              name="marks"
+              value={formState.marks}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]+"
+              placeholder="Enter marks"
+            />
+          </div>
+          <div className="grid grid-cols-4 gap-1 p-2">
+            <label className="col-span-4" htmlFor="option_1">
+              Choices
+            </label>
+            {formState.choices.map((option, index) => (
+              <input
+                key={index}
+                type="text"
+                value={option}
+                name={`option_${index}`}
+                id={`option_${index}`}
+                onChange={(e) => optionChangeHandler(index, e)}
+                placeholder={`Option ${index + 1}`}
+                className={`${inputStyle}`}
+                required
+              />
+            ))}
+          </div>
+          <div className="w-full justify-between flex items-center gap-3">
+            <IconButton
+              Icon={Plus}
+              type="submit"
+              variant="secondary"
+              reverse={false}
+            >
+              {" "}
+              Add question{" "}
+            </IconButton>
+            <IconButton
+              onClick={(e) => {
+                e.preventDefault();
+                createTest();
+              }}
+              disabled={questions.length <= 5}
+              Icon={Send}
+              variant="primary"
+              reverse={false}
+            >
+              Create
+            </IconButton>
+          </div>
+        </form>
+
+        <McqQuestions
+          update={(q) => {
+            setQuestions(q);
+          }}
+          questions={questions}
+        />
+      </div>
     </>
   );
 }

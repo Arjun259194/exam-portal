@@ -7,6 +7,8 @@ import z from "zod";
 const queryParam = z.object({ code: z.string(), id: z.string() });
 
 export async function GET(req: NextRequest) {
+  console.log("End point reached");
+
   const RedirectUrl = new URL("/message", req.url);
 
   const params = queryParam.safeParse({
@@ -35,9 +37,17 @@ export async function GET(req: NextRequest) {
 
   const token = JWTToken.create(otp.userId);
 
-  await db.otp.delete(otp.id)
+  await db.otp.delete(otp.id);
 
-  AuthCookie.new(token)
+  AuthCookie.new(token);
 
-  return NextResponse.redirect(new URL("/user", req.url))
+  return NextResponse.json(
+    {},
+    {
+      status: 301,
+      headers: {
+        Location: "/dashboard",
+      },
+    }
+  );
 }

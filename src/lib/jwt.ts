@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 
 type TokenPayload = Parameters<typeof jwt.sign>[0];
 

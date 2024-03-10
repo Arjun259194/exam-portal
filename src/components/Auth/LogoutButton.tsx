@@ -8,10 +8,15 @@ type Props = Omit<
   "onClick" | "children" | "disabled"
 >;
 
-function LogoutButton(props: Props) {
+function LogoutButton({ className, ...props }: Props) {
   const [loading, mutate] = useLogout();
   return (
-    <Button disabled={loading} onClick={mutate} {...props}>
+    <Button
+      className={`hover:bg-red-600 transition-color duration-200 hover:border-red-600 ${className}`}
+      disabled={loading}
+      onClick={mutate}
+      {...props}
+    >
       {loading ? "Loading..." : <>Logout</>}
     </Button>
   );

@@ -1,47 +1,55 @@
+import Card from "@/components/Card";
+import IconButton from "@/components/UI/IconButton";
 import db from "@/database";
+import { AuthCookie } from "@/lib/cookie";
+import { JWTToken } from "@/lib/jwt";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import React from "react";
 
-const page = async ({
-  params
-}: {
-  params: {
-    testId: string
-  }
-}) => {
-  const {  testId } = params;
-  if (!testId) redirect("/message?state=err&message=Not+valid+testid");
+const page = async () => {
+  const token = AuthCookie.getToken()!;
+  const userId = JWTToken.valid(token);
+  if (!userId) redirect("/auth/login");
+  const user = await db.user.findById(userId);
+  if (!user) redirect("/auth/login");
+  const res = await db.mcq.getMany();
+  if (!res) redirect("/message");
 
-  const test = await db.mcq.get(testId);
-  if (!test) {
-    return (
-      <section className="flex flex-col items-center justify-center capitalize">
-        <h1>Failed to fetch data</h1>
-        <p>
-          There was an issue fetching data, please try agian or check the link
-        </p>
-      </section>
-    );
-  }
   return (
-    <div className="w-2/3 mx-auto">
-      {test.questions.map(({ choices, marks, question }, i) => {
-        return (
-          <div key={i} className="w-full p-3 my-2 space-y-5 shadow-sm border border-gray-300 rounded-md">
-            <div className="flex justify-between items-center">
-              <span className="text-xl capitalize">{question}</span>
-              <span className="text-gray-500 text-sm">Marks:{marks}</span>
-            </div>
-            <div className="flex justify-around w-full">
-              {choices.map((choice, index) => (
-                <span className="shadow-sm px-4 py-2 rounded-md border border-gray-500">
-                  {String.fromCharCode(97 + index).toUpperCase()}. {choice}
-                </span>
-              ))}
-            </div>
+    <div className="">
+      {user.type === "TEACHER" ? (
+        <>
+          <div className="flex py-5 justify-between">
+            <h1 className="text-4xl capitalize ">Available Tests</h1>
+            <Link href="/test/mcq/new">
+              <IconButton Icon={Plus} reverse={false}>
+                Create New
+              </IconButton>
+            </Link>
           </div>
-        );
-      })}
+        </>
+      ) : null}
+
+      <div className="grid grid-cols-3 gap-5">
+        {res.map(
+          ({ title, id, user, userId, publish, subject, questions }, i) => {
+            return (
+              <Card.Test
+                key={i}
+                type="MCQ"
+                title={title}
+                questions={questions}
+                subject={subject}
+                user={user}
+                publish={publish}
+                userId={userId}
+                id={id}
+              />
+            );
+          },
+        )}
+      </div>
     </div>
   );
 };

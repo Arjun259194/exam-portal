@@ -1,7 +1,9 @@
-import { BookOpenCheck, BookText, Home, Info, LucideIcon, UserRound } from "lucide-react";
+import {  BookText, Home, Info, LucideIcon, UserRound } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import LogoutButton from "../Auth/LogoutButton";
+import { type User } from "@prisma/client";
+import { Prettify } from "@/types";
 
 interface ListItemProp {
   Icon: LucideIcon;
@@ -11,26 +13,30 @@ interface ListItemProp {
 
 const ListItem: React.FC<ListItemProp> = ({ Icon, path, text }) => (
   <li>
-    <Link className="flex transition-all items-center hover:translate-x-4 duration-500 hover:text-green-600 space-x-3" href={path}>
+    <Link className="flex transition-all p-2 rounded-lg border border-transparent hover:border-gray-200 items-center hover:translate-x-4 duration-500 hover:text-green-600 space-x-5 hover:bg-green-100" href={path}>
       <Icon className="size-5" />
       <span className="capitalize text-base">{text}</span>
     </Link>
   </li>
 );
 
-//TODO: Complite the IU
+type Props = Prettify<Omit<User, "password">>
 
-export const SideBar = () => {
+export const SideBar:React.FC<Props> = ({email,id,type,username}) => {
   return (
     <aside className="flex flex-col justify-between text-gray-600 h-screen space-y-5 rounded-r-xl p-3">
-      <div className="space-y-3">
-        <div className="flex items-end space-x-3 text-3xl font-semibold underline capitalize">
+      <div className="space-y-5">
+        {/* <div className="flex items-end space-x-3 text-3xl font-semibold underline capitalize">
           <BookOpenCheck className="size-7" /> <h1>Examify</h1>
+        </div> */}
+        <div className="flex flex-col space-y-1 border-2 border-gray-100 shadow-sm p-2 rounded-lg ">
+          <span className="text-2xl capitalize font-semibold">{username}</span>
+          <span className="text-sm text-gray-500">{email}</span>
         </div>
-        <ul className="space-y-4">
-          <ListItem Icon={Home} path="/" text="Home" />
+        <ul className="">
+          <ListItem Icon={Home} path="/dashboard" text="Home" />
           <ListItem Icon={Info} path="/about" text="about" />
-          <ListItem Icon={BookText} path="/user/test" text="tests" />
+          <ListItem Icon={BookText} path="/test" text="tests" />
           <ListItem Icon={UserRound} path="/user" text="Profile" />
         </ul>
       </div>

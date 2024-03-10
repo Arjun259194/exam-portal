@@ -11,30 +11,39 @@ datasource db {
 }
 
 enum UserType {
-  STUDENT
   TEACHER
-}
-
-enum TestType {
-  MCQ
-  WRITTEN
+  STUDENT
 }
 
 model User {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  type     UserType
   username String
   email    String    @unique
   password String
+  type     UserType
   Otp      Otp[]
   MCQTest  MCQTest[]
+  WrittenTest  WrittenTest[]
 }
 
 model MCQTest {
   id        String        @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String        @db.ObjectId
-  user      User          @relation(fields: [userId], references: [id])
+  createrId    String        @db.ObjectId @map("userId")
+  creater      User          @relation(fields: [createrId], references: [id])
+  title     String
+  subject   String
+  publish   Boolean
   questions MCQQuestion[]
+}
+
+model WrittenTest {
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  createrId    String        @db.ObjectId @map("userId")
+  creater      User          @relation(fields: [createrId], references: [id])
+  title     String
+  subject   String
+  publish   Boolean
+
 }
 
 model WrittenQuenstion {
@@ -48,12 +57,9 @@ model MCQQuestion {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   MCQTest  MCQTest  @relation(fields: [testId], references: [id])
   testId   String   @db.ObjectId
-  title    String
-  subject  String
   question String
   marks    Int
   choices  String[]
-  publish  Boolean
 }
 
 model Otp {

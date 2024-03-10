@@ -21,7 +21,7 @@ async function page() {
   if (user.type == "STUDENT") redirect("/")
 
   return (
-    <div className="w-2/3 mx-auto p-2">
+    <div className="container mx-auto">
       <NewMcqForm />
     </div>
   )

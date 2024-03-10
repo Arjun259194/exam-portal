@@ -1,16 +1,25 @@
 "use server";
-import LogoutButton from "@/components/Auth/LogoutButton";
+import db from "@/database";
+import { getUserId } from "@/utils";
+import { redirect } from "next/navigation";
 
-function page() {
-  return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center">
-      <h1 className="text-5xl capitalize text-center">
-        Page under development
-      </h1>
-      <p>Only authorized users can access this page</p>
-      <LogoutButton variant="primary" />
-    </div>
-  );
+async function page() {
+  const userID = getUserId();
+  if (!userID) redirect("/auth/login");
+
+  const user = await db.user.findById(userID);
+
+  if (!user)
+    return (
+      <div>
+        <p>something went wrong, can't fetch user information</p>
+      </div>
+    );
+
+  const { type, email, password, username } = user;
+
+  return <div className="">{/*TODO*/}</div>;
+  // create a profile page
 }
 
 export default page;
