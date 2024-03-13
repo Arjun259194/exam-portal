@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   const { questions, title, subject } = data;
 
   try {
-    await db.mcq.new({ userID, questions, title, subject });
+    await db.test.new({ userID, questions, title, subject });
   } catch (e) {
     console.error(e);
     return NextResponse.json({}, { status: 500 });

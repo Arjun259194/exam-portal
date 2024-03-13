@@ -2,7 +2,7 @@ import Card from "@/components/Card";
 import db from "@/database";
 
 const page = async () => {
-  const tests = await db.mcq.getMany();
+  const tests = await db.test.getMany();
   const isEmpty = !tests || tests.length <= 0 ? true : false;
 
   return (

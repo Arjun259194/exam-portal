@@ -16,41 +16,51 @@ enum UserType {
 }
 
 model User {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  username String
-  email    String    @unique
-  password String
-  type     UserType
-  Otp      Otp[]
-  MCQTest  MCQTest[]
-  WrittenTest  WrittenTest[]
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  username    String
+  email       String        @unique
+  password    String
+  type        UserType
+  Otp         Otp[]
+  MCQTest     MCQTest[]
+  WrittenTest WrittenTest[]
 }
 
 model MCQTest {
   id        String        @id @default(auto()) @map("_id") @db.ObjectId
-  createrId    String        @db.ObjectId @map("userId")
-  creater      User          @relation(fields: [createrId], references: [id])
+  createrId String        @db.ObjectId
+  creater   User          @relation(fields: [createrId], references: [id])
   title     String
   subject   String
   publish   Boolean
   questions MCQQuestion[]
+  answers   MCQAnswer[]
+}
+
+model MCQAnswer {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  testId  String   @db.ObjectId
+  test    MCQTest  @relation(fields: [testId], references: [id])
+  answers String[]
 }
 
 model WrittenTest {
-  id        String        @id @default(auto()) @map("_id") @db.ObjectId
-  createrId    String        @db.ObjectId @map("userId")
-  creater      User          @relation(fields: [createrId], references: [id])
+  id        String             @id @default(auto()) @map("_id") @db.ObjectId
+  createrId String             @map("userId") @db.ObjectId
+  creater   User               @relation(fields: [createrId], references: [id])
   title     String
   subject   String
   publish   Boolean
-
+  questions WrittenQuenstion[]
 }
 
 model WrittenQuenstion {
-  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  id               String      @id @default(auto()) @map("_id") @db.ObjectId
   question         String
   marks            Int
   optionalQuestion String
+  testId           String      @db.ObjectId
+  test             WrittenTest @relation(fields: [testId], references: [id])
 }
 
 model MCQQuestion {

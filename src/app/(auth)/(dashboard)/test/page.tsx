@@ -13,7 +13,7 @@ const page = async () => {
   if (!userId) redirect("/auth/login");
   const user = await db.user.findById(userId);
   if (!user) redirect("/auth/login");
-  const res = await db.mcq.getMany();
+  const res = await db.test.getMany();
   if (!res) redirect("/message");
 
   return (
@@ -33,18 +33,12 @@ const page = async () => {
 
       <div className="grid grid-cols-3 gap-5">
         {res.map(
-          ({ title, id, user, userId, publish, subject, questions }, i) => {
+          (props, i) => {
             return (
               <Card.Test
                 key={i}
                 type="MCQ"
-                title={title}
-                questions={questions}
-                subject={subject}
-                user={user}
-                publish={publish}
-                userId={userId}
-                id={id}
+                {...props}
               />
             );
           },

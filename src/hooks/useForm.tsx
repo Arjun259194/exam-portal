@@ -1,5 +1,6 @@
 import { ChangeEventHandler, useState } from "react"
 
+//TODO add zod validation
 export const useForm = <T,>(init: T) => {
     const [state, setState] = useState(init)
 

@@ -82,7 +82,7 @@ function NewMcqForm() {
               value={title}
               name="title"
               type="text"
-              placeholder="Enter your question"
+              placeholder="Mid sem test"
             />
             <input
               required
@@ -92,6 +92,7 @@ function NewMcqForm() {
               name="marks"
               value={subject}
               type="text"
+              placeholder="Maths"
             />
           </div>
 
@@ -166,7 +167,7 @@ function NewMcqForm() {
                 e.preventDefault();
                 createTest();
               }}
-              disabled={questions.length <= 5}
+              disabled={questions.length <= 4}
               Icon={Send}
               variant="primary"
               reverse={false}

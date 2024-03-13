@@ -1,5 +1,5 @@
 import { Question } from "@/utils/classes";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, WrittenTest } from "@prisma/client";
 
 type DBWrittenQuestion = PrismaClient["writtenQuenstion"];
 type DBWriitenTest = PrismaClient["writtenTest"];
@@ -16,14 +16,14 @@ export class TestOperations {
   constructor(
     private mcqTest: DBMcqTest,
     private mcqQuestion: DBMCQQuestion,
-    // private writtenTest:
-    private writtenQuestion: DBWrittenQuestion,
+    private writtenTest: DBWriitenTest,
+    private writtenQuestion: DBWrittenQuestion
   ) {}
 
   public async new({ questions, ...param }: NewQuestionParam) {
     const res = await this.mcqTest.create({
       data: {
-        userId: param.userID,
+        createrId: param.userID,
         publish: false, // user will public it later
         title: param.title,
         subject: param.subject,
@@ -57,14 +57,18 @@ export class TestOperations {
   public async get(testId: string) {
     const mcqTest = await this.mcqTest.findFirst({
       where: { id: testId },
-      include: { questions: true },
-    });
-    if (mcqTest) return mcqTest;
-
-    const writtenTest = await this.writtenQuestion.findFirst({
-      where: {id: testId},
+      include: { creater: true, questions: true },
     });
 
-    //TODO
+    if (mcqTest) return {...mcqTest, type: "MCQ"} as const;
+
+    const writtenTest = await this.writtenTest.findFirst({
+      where: { id: testId },
+      include: { creater: true, questions: true },
+    });
+
+    if (writtenTest) return {...writtenTest, type: "WRITTEN"} as const;
+
+    return null;
   }
 }

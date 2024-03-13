@@ -11,6 +11,7 @@ export default async function AuthLayout({
   // console.log("This is userID:", userId)
   // const user = await db.user.findById(userId);
   // if (!user) redirect("/auth/register");
+  //// Code ubove is not needed not but it was used to authorize user
   const userID =  getUserId()
   if(!userID) return redirect("/auth/login")
   return <>{children}</>;
