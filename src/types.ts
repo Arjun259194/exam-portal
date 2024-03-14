@@ -1,3 +1,5 @@
+import { PrismaClient } from "@prisma/client";
+import db from "./database";
 import { Question } from "./utils/classes";
 
 export type UserRole = "TEACHER"|"STUDENT" //TODO make it type safe

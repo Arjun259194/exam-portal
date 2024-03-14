@@ -1,3 +1,4 @@
+import McqAttempForm from "@/components/test/McqAttempForm";
 import db from "@/database";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -14,7 +15,7 @@ const page = async ({ params: { id } }: Props) => {
   const type = test.type;
   return (
     <section className="container mx-auto py-5">
-      <div>
+      <div  >
         <h1 className="text-4xl font-semibold capitalize ">{test.title}</h1>
         <div className="flex items-center space-x-2 capitalize">
           <span className="font-semibold">
@@ -49,31 +50,10 @@ const page = async ({ params: { id } }: Props) => {
                 <p>total question: {test.questions.length}</p>
                 <p>
                   total marks:{" "}
-                  {test.questions.reduce((prev, curr) => prev + curr.marks, 0)}
+                  {test.questions.reduce((prev, curr) => prev + curr.marks, 0)}{" "}
                 </p>
               </div>
-
-              <form className="space-y-2 w-3/4 mx-auto">
-                {test.questions.map((q) => {
-                  return (
-                    <article className="w-full shadow-md p-2 rounded-md">
-                      <div className="flex justify-between items-center text-lg">
-                        <p className="text-lg">{q.question}</p>
-                        <span className="text-sm">{q.marks}</span>
-                      </div>
-                      <div className="flex justify-evenly items-center">
-                        {q.choices.map((c, index) => {
-                          return (
-                            <span>
-                              {String.fromCharCode(97 + index)}.{c}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    </article>
-                  );
-                })}
-              </form>
+              <McqAttempForm questions={test.questions} />
             </div>
           </div>
         </>
