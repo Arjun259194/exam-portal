@@ -41,9 +41,9 @@ function NewMcqForm() {
     try {
       await axios.post("/api/mcq/test/new", {title, subject, questions});
       toast.success("Test created 👍");
-      window.location.href = "/user/test";
+      window.location.href = "/test";
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("Failed to create the test");
     } finally {
       setLoading(false);

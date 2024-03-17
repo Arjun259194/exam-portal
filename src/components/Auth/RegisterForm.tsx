@@ -18,7 +18,7 @@ const RegisterForm: FC<{ action: FnFormAction }> = ({
       toast.success("User registered");
       isRedirect = true;
     } catch (error) {
-      console.log(error)
+      console.error(error)
       toast.error(`${error}`);
       isRedirect = false;
     }

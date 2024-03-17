@@ -1,19 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import Button from "../UI/Button";
+import toast from "react-hot-toast";
+import db from "@/database";
 
 type Props = {
-  questions: {
-    id: string;
-    testId: string;
-    question: string;
-    marks: number;
-    choices: string[];
-  }[];
+  action: (formdata: FormData) => Promise<void>;
+  test: NonNullable<Awaited<ReturnType<typeof db.test.get>>[0]>;
+  userID: string
 };
 
-function newArr(n: number) {
+function newArr(n: number): string[] {
   const arr = [];
   for (let i = 0; i <= n; i++) {
     arr.push("");
@@ -21,30 +19,51 @@ function newArr(n: number) {
   return arr;
 }
 
-const McqAttempForm: React.FC<Props> = (test) => {
+const McqAttempForm: React.FC<Props> = ({ test, action, userID }) => {
   const [answer, setAnswer] = useState(newArr(test.questions.length - 1));
 
-  useEffect(() => console.log(answer), [answer]);
+  const validate = () => answer.filter(Boolean).length === answer.length;
 
-  function submitionHandler() {
+  const getFormData = () => {
+    const formData = new FormData();
+    formData.set("answers", JSON.stringify(answer));
+    formData.set("testId", test.id);
+    formData.set('userId', userID)
+    return formData
+  }
 
-    //TODO
-
+  async function submitionHandler(e: FormEvent) {
+    e.preventDefault();
+    if (!validate()) {
+      toast.error("Give answers to all the questions before submitting");
+      return;
+    }
+    const formData = getFormData()
+    try {
+      toast.loading("Processing...");
+      await action(formData);
+      toast.dismiss();
+      toast.success("Done!");
+    } catch (error) {
+      toast.dismiss();
+      toast.error("There was an error");
+    }
   }
 
   return (
-    <form className="space-y-2 w-3/4 mx-auto">
+    <form onSubmit={submitionHandler} className="space-y-3 w-3/4 mx-auto">
       {test.questions.map((q, i) => {
         return (
-          <article className="w-full shadow-md p-2 rounded-md">
-            <div className="flex justify-between items-center text-lg">
+          <article className="w-full space-y-5 shadow-sm border border-gray-200  p-5 rounded-md">
+            <div className="flex justify-between items-center text-lg capitalize">
               <p className="text-lg">{q.question}</p>
               <span className="text-sm">{q.marks}</span>
             </div>
-            <div className="flex justify-evenly items-center">
+            {/* <div className="flex justify-evenly items-center"> */}
+            <div className="grid grid-cols-2 gap-2">
               {q.choices.map((c, j) => {
                 return (
-                  <div className="flex space-x-2">
+                  <div className="flex capitalize p-1 rounded-md hover:bg-green-100 text-lg space-x-2">
                     <input
                       type="radio"
                       value={String.fromCharCode(97 + j) + "." + c}
@@ -62,7 +81,7 @@ const McqAttempForm: React.FC<Props> = (test) => {
                       }}
                     />
                     <label htmlFor={`${j}${i}`}>
-                      {String.fromCharCode(97 + j) + "." + c}
+                      {String.fromCharCode(97 + j) + ". " + c}
                     </label>
                   </div>
                 );

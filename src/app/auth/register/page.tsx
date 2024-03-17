@@ -1,4 +1,4 @@
-import { registerAction } from "@/action/registerAction";
+import action from "./action";
 import RegisterForm from "@/components/Auth/RegisterForm";
 import Link from "next/link";
 import React from "react";
@@ -11,7 +11,7 @@ function page() {
           Register Form
         </h1>
         <p>New? Join us and have a flowless expireance</p>
-        <RegisterForm action={registerAction} />
+        <RegisterForm action={action} />
         <p>
           Already have an account?{" "}
           <Link

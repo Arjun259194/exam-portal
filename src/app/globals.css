@@ -5,6 +5,7 @@
 body {
   cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIxLjI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLW1vdXNlLXBvaW50ZXItMiI+PHBhdGggZD0ibTQgNCA3LjA3IDE3IDIuNTEtNy4zOUwyMSAxMS4wN3oiLz48L3N2Zz4="),
     auto;
+  @apply accent-green-600;
 }
 
 a,
@@ -18,7 +19,8 @@ button:disabled {
     auto;
 }
 
-input[type="radio"] {
+input[type="radio"],
+label {
   cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIxLjI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXBvaW50ZXIiPjxwYXRoIGQ9Ik0yMiAxNGE4IDggMCAwIDEtOCA4Ii8+PHBhdGggZD0iTTE4IDExdi0xYTIgMiAwIDAgMC0yLTJ2MGEyIDIgMCAwIDAtMiAydjAiLz48cGF0aCBkPSJNMTQgMTBWOWEyIDIgMCAwIDAtMi0ydjBhMiAyIDAgMCAwLTIgMnYxIi8+PHBhdGggZD0iTTEwIDkuNVY0YTIgMiAwIDAgMC0yLTJ2MGEyIDIgMCAwIDAtMiAydjEwIi8+PHBhdGggZD0iTTE4IDExYTIgMiAwIDEgMSA0IDB2M2E4IDggMCAwIDEtOCA4aC0yYy0yLjggMC00LjUtLjg2LTUuOTktMi4zNGwtMy42LTMuNmEyIDIgMCAwIDEgMi44My0yLjgyTDcgMTUiLz48L3N2Zz4="),
     auto;
 }

@@ -1,4 +1,4 @@
-import { loginAction } from "@/action/loginAction";
+import action from "./action"
 import LoginForm from "@/components/Auth/LoginForm";
 import Link from "next/link";
 import React from "react";
@@ -11,7 +11,7 @@ function page() {
           Login Form
         </h1>
         <p className="text-center">Welcome back! rejoin us in the perfact flow of study and work</p>
-        <LoginForm action={loginAction} />
+        <LoginForm action={action} />
         <p>Don't have an account?  {" "}
         <Link className="text-green-500 underline font-semibold capitalize" href="/auth/register">Register</Link>
         </p>

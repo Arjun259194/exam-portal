@@ -7,8 +7,6 @@ import z from "zod";
 const queryParam = z.object({ code: z.string(), id: z.string() });
 
 export async function GET(req: NextRequest) {
-  console.log("End point reached");
-
   const RedirectUrl = new URL("/message", req.url);
 
   const params = queryParam.safeParse({

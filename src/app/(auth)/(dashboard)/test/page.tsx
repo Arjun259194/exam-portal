@@ -1,20 +1,22 @@
 import Card from "@/components/Card";
 import IconButton from "@/components/UI/IconButton";
 import db from "@/database";
-import { AuthCookie } from "@/lib/cookie";
-import { JWTToken } from "@/lib/jwt";
+import { getUserId } from "@/utils";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 const page = async () => {
-  const token = AuthCookie.getToken()!;
-  const userId = JWTToken.valid(token);
-  if (!userId) redirect("/auth/login");
+  const userId = getUserId()
+  if(!userId) redirect("/login")
+
   const user = await db.user.findById(userId);
   if (!user) redirect("/auth/login");
-  const res = await db.test.getMany();
-  if (!res) redirect("/message");
+
+  const {mcq, written} = await db.test.getMany();
+
+  const CONDITION = mcq.length <= 0 && written.length <= 0
+  if (CONDITION) redirect("/message");
 
   return (
     <div className="">
@@ -32,7 +34,7 @@ const page = async () => {
       ) : null}
 
       <div className="grid grid-cols-3 gap-5">
-        {res.map(
+        {mcq.map(
           (props, i) => {
             return (
               <Card.Test

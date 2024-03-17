@@ -1,9 +1,8 @@
 "use server";
 import db from "@/database";
 import { registerFormSchema } from "@/lib/schema";
-import { FnFormAction } from "@/types";
 
-export const registerAction: FnFormAction = async (formData) => {
+  export default async function action(formData: FormData) {
   const parseData = registerFormSchema.safeParse({
     username: formData.get("username"),
     email: formData.get("email"),
@@ -20,7 +19,7 @@ export const registerAction: FnFormAction = async (formData) => {
   if (foundUser) throw new Error("Email already used by other user!");
 
   await db.user.new(data).catch(err => {
-    console.log(err)
+    console.error(err)
     throw new Error("Failed to register new user")
   })
 

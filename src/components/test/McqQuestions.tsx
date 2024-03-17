@@ -15,18 +15,27 @@ const McqQuestions: React.FC<Props> = ({ questions, update }) => (
         <h1>No questions added yet!</h1>
       </div>
     ) : (
-      questions.map((state, index) =>
-        state ? (
-          <McqQuestion
-            onCancel={() => {
-              const newArr = questions.filter((_, i) => i !== index);
-              update(newArr);
-            }}
-            key={index}
-            {...state}
-          />
-        ) : null,
-      )
+      <>
+        <div className="flex w-full justify-between">
+          <span>Total Questions: {questions.length}</span>
+          <span>
+            total marks:{" "}
+            {questions.reduce((prev, curr) => prev + curr.marks, 0)}
+          </span>
+        </div>
+        {questions.map((state, index) =>
+          state ? (
+            <McqQuestion
+              onCancel={() => {
+                const newArr = questions.filter((_, i) => i !== index);
+                update(newArr);
+              }}
+              key={index}
+              {...state}
+            />
+          ) : null,
+        )}
+      </>
     )}
   </div>
 );

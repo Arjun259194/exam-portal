@@ -8,8 +8,7 @@ class Database {
   public otp;
   public test;
 
-  constructor() {
-    const prisma = new PrismaClient();
+  constructor(prisma: PrismaClient) {
     this.user = new UserOperations(prisma.user);
     this.otp = new OtpOperations(prisma.otp);
     this.test = new TestOperations(
@@ -21,5 +20,7 @@ class Database {
   }
 }
 
-const db = new Database();
+export const prisma = new PrismaClient()
+
+const db = new Database(prisma);
 export default db;

@@ -49,9 +49,17 @@ export class TestOperations {
   }
 
   public async getMany() {
-    return await this.mcqTest.findMany({
+    const mcqTest =  await this.mcqTest.findMany({
       include: { questions: true, creater: true },
     });
+
+    const writtenTest = await this.writtenTest.findMany({
+      include: {
+        questions: true, creater: true
+      }
+    })
+
+    return {mcq: mcqTest, written: writtenTest} as const
   }
 
   public async get(testId: string) {
@@ -60,15 +68,15 @@ export class TestOperations {
       include: { creater: true, questions: true },
     });
 
-    if (mcqTest) return {...mcqTest, type: "MCQ"} as const;
+    if(mcqTest) return [mcqTest, null] as const
 
     const writtenTest = await this.writtenTest.findFirst({
       where: { id: testId },
       include: { creater: true, questions: true },
     });
 
-    if (writtenTest) return {...writtenTest, type: "WRITTEN"} as const;
+    if(writtenTest) return [null, writtenTest]  as const
 
-    return null;
+    return [null, null];
   }
 }

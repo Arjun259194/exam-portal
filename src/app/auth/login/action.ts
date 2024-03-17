@@ -1,13 +1,11 @@
 "use server";
 import db from "@/database";
-import { FnFormAction } from "@/types";
 import MailService from "@/lib/email";
 import { PasswordHash } from "@/lib/hash";
-import { z } from "zod";
 import { loginFormSchema } from "@/lib/schema";
 
 
-export const loginAction: FnFormAction = async (formData) => {
+  export default async function action(formData: FormData) {
   const parsedObj = loginFormSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),

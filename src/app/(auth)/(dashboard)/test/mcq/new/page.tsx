@@ -12,7 +12,7 @@ async function page() {
   if (!userID) redirect('/message')
 
   const user = await db.user.findById(userID).catch(err => {
-    console.log("Error while fetchin user", err)
+    console.error("Error while fetchin user", err)
     redirect("/message")
   })
 
