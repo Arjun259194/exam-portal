@@ -1,22 +1,24 @@
 import Card from "@/components/Card";
 import IconButton from "@/components/UI/IconButton";
+import Title from "@/components/UI/Title";
 import db from "@/database";
-import { getUserId } from "@/utils";
+import { getSessionUser } from "@/utils";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 const page = async () => {
-  const userId = getUserId()
-  if(!userId) redirect("/login")
+  const user = await getSessionUser();
+  const { mcq, written } = await db.test.getMany();
+  const fMcq = mcq
+    .filter((t) => t.createrId === user.id)
+    .map((t) => {
+      return { ...t, type: "MCQ" } as const;
+    });
+  const fWritten = written.filter((t) => t.createrId === user.id).map(t => {
+    return { ...t, type: "WRITTEN" } as const
+  })
 
-  const user = await db.user.findById(userId);
-  if (!user) redirect("/auth/login");
-
-  const {mcq, written} = await db.test.getMany();
-
-  const CONDITION = mcq.length <= 0 && written.length <= 0
-  if (CONDITION) redirect("/message");
+  const CONDITION = fMcq.length <= 0 || fWritten.length <= 0;
 
   return (
     <div className="">
@@ -33,19 +35,26 @@ const page = async () => {
         </>
       ) : null}
 
-      <div className="grid grid-cols-3 gap-5">
-        {mcq.map(
-          (props, i) => {
+      {CONDITION ? (
+        <div className="grid grid-cols-3 gap-5">
+          {[...fMcq, ...fWritten].map((props, i) => {
             return (
-              <Card.Test
-                key={i}
-                type="MCQ"
-                {...props}
-              />
+              <Card.Test userRole={user.type} key={i} {...props} />
             );
-          },
-        )}
-      </div>
+          })}
+        </div>
+      ) : (
+        <div className="text-center flex items-center flex-col">
+          {/* TODO: Make this better */}
+          <Title>Hmm!</Title>
+          <p>No Test created by you yet</p>
+          <Link href="/test/mcq/new">
+            <IconButton variant="secondary" Icon={Plus} reverse={false}>
+              Create New
+            </IconButton>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

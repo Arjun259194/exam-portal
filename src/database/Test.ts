@@ -17,8 +17,8 @@ export class TestOperations {
     private mcqTest: DBMcqTest,
     private mcqQuestion: DBMCQQuestion,
     private writtenTest: DBWriitenTest,
-    private writtenQuestion: DBWrittenQuestion
-  ) {}
+    private writtenQuestion: DBWrittenQuestion,
+  ) { }
 
   public async new({ questions, ...param }: NewQuestionParam) {
     const res = await this.mcqTest.create({
@@ -49,33 +49,38 @@ export class TestOperations {
   }
 
   public async getMany() {
-    const mcqTest =  await this.mcqTest.findMany({
-      include: { questions: true, creater: true },
+    const mcqTest = await this.mcqTest.findMany({
+      include: { questions: true, creater: true, answers: { include: { user: true } } },
     });
 
     const writtenTest = await this.writtenTest.findMany({
       include: {
-        questions: true, creater: true
-      }
-    })
+        questions: true,
+        creater: true, // TODO: add answers to the model and include it here
+      },
+    });
 
-    return {mcq: mcqTest, written: writtenTest} as const
+    return { mcq: mcqTest, written: writtenTest } as const;
   }
 
   public async get(testId: string) {
     const mcqTest = await this.mcqTest.findFirst({
       where: { id: testId },
-      include: { creater: true, questions: true },
+      include: {
+        creater: true,
+        questions: true,
+        answers: { include: { user: true } },
+      },
     });
 
-    if(mcqTest) return [mcqTest, null] as const
+    if (mcqTest) return [mcqTest, null] as const;
 
     const writtenTest = await this.writtenTest.findFirst({
       where: { id: testId },
-      include: { creater: true, questions: true },
+      include: { creater: true, questions: true }, //TODO: add answers to the model and include it
     });
 
-    if(writtenTest) return [null, writtenTest]  as const
+    if (writtenTest) return [null, writtenTest] as const;
 
     return [null, null];
   }
