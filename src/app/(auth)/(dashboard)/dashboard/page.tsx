@@ -1,11 +1,15 @@
 import Card from "@/components/Card";
 import db from "@/database";
+import { getSessionUser } from "@/utils";
 import { redirect } from "next/navigation";
 
 const page = async () => {
+  const user = await getSessionUser();
   const { written, mcq } = await db.test.getMany();
   const CONDITION = mcq.length <= 0 && written.length <= 0;
-  if (CONDITION) redirect("/message");
+  if (CONDITION) {
+    redirect("/message");
+  }
 
   return (
     <>
@@ -23,18 +27,32 @@ const page = async () => {
                 <p>No Mcq Test Available, try refreshing</p>
               ) : (
                 mcq.map((q, index) => {
-                  return <Card.Test type="MCQ" key={index} {...q} />;
+                  return (
+                    <Card.Test
+                      userRole={user.type}
+                      type="MCQ"
+                      key={index}
+                      {...q}
+                    />
+                  );
                 })
               )}
             </div>
             <div className="min-h-36 flex py-2 overflow-x-auto overflow-y-hidden">
               {written.length <= 0 ? (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <p>No Written Test Available, try refreshing</p>
-                  </div>
+                <div className="w-full h-full flex items-center justify-center">
+                  <p>No Written Test Available, try refreshing</p>
+                </div>
               ) : (
                 written.map((q, index) => {
-                  return <Card.Test type="WRITTEN" key={index} {...q} />;
+                  return (
+                    <Card.Test
+                      userRole={user.type}
+                      type="WRITTEN"
+                      key={index}
+                      {...q}
+                    />
+                  );
                 })
               )}
             </div>

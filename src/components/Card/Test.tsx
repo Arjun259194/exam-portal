@@ -1,25 +1,23 @@
-import db from "@/database";
 import Button from "../UI/Button";
 import Link from "next/link";
 import { Pick } from "@prisma/client/runtime/library";
+import { McqTest, WrittenTest } from "@/types";
 
-type McqTest = Awaited<ReturnType<typeof db.test.getMany>>["mcq"][number];
-type WrittenTest = Awaited<
-  ReturnType<typeof db.test.getMany>
->["written"][number];
-
-type Props =
+type Props = (
   | ({ type: "MCQ" } & Pick<
-      McqTest,
-      "id" | "title" | "questions" | "subject" | "creater"
-    >)
+    McqTest,
+    "id" | "title" | "questions" | "subject" | "creater"
+  >)
   | ({ type: "WRITTEN" } & Pick<
-      WrittenTest,
-      "id" | "title" | "questions" | "subject" | "creater"
-    >);
+    WrittenTest,
+    "id" | "title" | "questions" | "subject" | "creater"
+  >)
+) & {
+  userRole: "STUDENT" | "TEACHER";
+};
 
 const Test: React.FC<Props> = (props) => {
-  const { id, questions, title, subject, creater, type } = props;
+  const { id, questions, title, subject, creater, type, userRole } = props;
   const totalMarks = questions.reduce((prev, curr) => prev + curr.marks, 0);
   const totalQuestions = questions.length;
   return (
@@ -30,9 +28,8 @@ const Test: React.FC<Props> = (props) => {
       <div className="space-x-2">
         <span className="capitalize text-gray-500">{creater.username}</span>
         <span
-          className={`text-sm px-2 py-0.5 rounded-lg border-2 text-blue-400 capitalize ${
-            type === "MCQ" ? "border-blue-400" : "border-green-400"
-          }`}
+          className={`text-sm px-2 py-0.5 rounded-lg border-2 text-blue-400 capitalize ${type === "MCQ" ? "border-blue-400" : "border-green-400"
+            }`}
         >
           {subject}
         </span>
@@ -47,9 +44,16 @@ const Test: React.FC<Props> = (props) => {
           <span className="text-sm capitalize mx-1">total questions</span>
         </div>
       </div>
-      <Link href={`/student/attendindg/${id}/`}>
-        <Button variant="secondary">Apply</Button>
-      </Link>
+      {userRole === "STUDENT" && (
+        <Link href={`/student/attendindg/${id}/`}>
+          <Button variant="secondary">Apply</Button>
+        </Link>
+      )}
+      {userRole === "TEACHER" && (
+        <Link href={`/test/info/${id}/`}>
+          <Button variant="secondary">More</Button>
+        </Link>
+      )}
     </article>
   );
 };
