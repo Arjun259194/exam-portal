@@ -1,8 +1,9 @@
 import db from "@/database";
 import { redirect } from "next/navigation";
 import { getSessionUser } from "@/utils";
-import McqAnswerInspect from "@/components/test/McqAnswerInspect";
+import McqTestInspect from "@/components/test/McqTestInspect";
 import WrittenAnswerInspect from "@/components/test/WrittenAnswerInspect";
+import { Metadata } from "next";
 
 interface Props {
   params: {
@@ -10,20 +11,24 @@ interface Props {
   };
 }
 
-const page: React.FC<Props> = async (props) => {
+export const metadata: Metadata = {
+  title: "Inspect Test",
+  description: "make your exams easy",
+};
+
+
+async function fetchData(id: string) {
   const user = await getSessionUser();
   if (user.type !== "TEACHER") redirect("/dashboard");
-  const tests = await db.test.get(props.params.id);
-  const [mcq, written] = tests;
-  if (!mcq && !written)
-    return (
-      <div>
-        <p>Not found</p>
-      </div>
-    );
-  if (!!mcq) return <McqAnswerInspect {...mcq} />;
-  if (!!written) return <WrittenAnswerInspect {...written} />; //TODO: create this Component
-  return <div>Something went wrong</div>;
+  const test = await db.test.get(id);
+  if (!test) redirect("/message&message=test+not+found&state=err")
+  return { user, test } as const
+}
+
+const page: React.FC<Props> = async (props: any) => {
+  const { test } = await fetchData(props.params.id)
+  if (test.type === "MCQ") return <McqTestInspect  {...test} />;
+  else return <WrittenAnswerInspect {...test} />; //TODO: create this Component
 };
 
 export default page;

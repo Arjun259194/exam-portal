@@ -3,11 +3,11 @@
 import { FormEvent, useState } from "react";
 import Button from "../UI/Button";
 import toast from "react-hot-toast";
-import db from "@/database";
+import { TestMcq } from "@/types";
 
 type Props = {
   action: (formdata: FormData) => Promise<void>;
-  test: NonNullable<Awaited<ReturnType<typeof db.test.get>>[0]>;
+  test: TestMcq
   userID: string
 };
 

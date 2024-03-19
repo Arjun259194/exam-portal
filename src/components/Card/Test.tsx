@@ -2,6 +2,8 @@ import Button from "../UI/Button";
 import Link from "next/link";
 import { Pick } from "@prisma/client/runtime/library";
 import { McqTest, WrittenTest } from "@/types";
+import IconButton from "../UI/IconButton";
+import { ChevronRight } from "lucide-react"
 
 type Props = (
   | ({ type: "MCQ" } & Pick<
@@ -51,7 +53,7 @@ const Test: React.FC<Props> = (props) => {
       )}
       {userRole === "TEACHER" && (
         <Link href={`/test/info/${id}/`}>
-          <Button variant="secondary">More</Button>
+          <IconButton reverse Icon={ChevronRight} variant="secondary">More</IconButton>
         </Link>
       )}
     </article>

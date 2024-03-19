@@ -73,15 +73,15 @@ export class TestOperations {
       },
     });
 
-    if (mcqTest) return [mcqTest, null] as const;
+    if (mcqTest) return { ...mcqTest, type: "MCQ" } as const;
 
     const writtenTest = await this.writtenTest.findFirst({
       where: { id: testId },
       include: { creater: true, questions: true }, //TODO: add answers to the model and include it
     });
 
-    if (writtenTest) return [null, writtenTest] as const;
+    if (writtenTest) return { ...writtenTest, type: "WRITTEN" } as const;
 
-    return [null, null];
+    return null;
   }
 }

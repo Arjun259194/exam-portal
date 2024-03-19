@@ -3,7 +3,7 @@ import db, { prisma } from "@/database";
 import { redirect } from "next/navigation";
 import React from "react";
 import action from "./action";
-import { getUserId } from "@/utils";
+import { getSessionUser, getUserId } from "@/utils";
 
 type Props = {
   params: { id: string };
@@ -31,27 +31,33 @@ function Boiler({ title, username, subject }: BoilerProps) {
   );
 }
 
+async function fetchData(id: string) {
+  const user = await getSessionUser()
+  if (user.type === "TEACHER") redirect("/dashboard")
+  const res = await prisma.attendedTest.findFirst({
+    where: {
+      userID: user.id,
+      testID: id
+    }
+  })
+  if (res) redirect("/dashboard")
+
+  const test = await db.test.get(id)
+  if (!test) redirect("/message?message=Test+is+not+found&state=err")
+
+  return { user, test } as const
+}
+
 const page = async ({ params: { id } }: Props) => {
-  const userID = getUserId()
-  if(!userID) return redirect("/login")
-
-  const res = await prisma.attendedTest.findFirst({where:{
-    userID,
-    testID: id
-  }})
-
-  if(res) redirect("/test")
-
-  const [mcq, written] = await db.test.get(id);
-  if (!mcq && !written) redirect("/deshboard");
+  const { test, user } = await fetchData(id)
   return (
     <section className="container mx-auto py-5">
-      {!written ? (
+      {test.type === 'MCQ' ? (
         <>
           <Boiler
-            username={mcq.creater.username}
-            title={mcq.title}
-            subject={mcq.title}
+            username={test.creater.username}
+            title={test.title}
+            subject={test.title}
           />
           <div>
             <div className="space-y-4">
@@ -72,13 +78,13 @@ const page = async ({ params: { id } }: Props) => {
             </div>
             <div>
               <div className="flex items-center justify-around w-full p-2 capitalize text-lg">
-                <p>total question: {mcq.questions.length}</p>
+                <p>total question: {test.questions.length}</p>
                 <p>
                   total marks:{" "}
-                  {mcq.questions.reduce((prev, curr) => prev + curr.marks, 0)}{" "}
+                  {test.questions.reduce((prev, curr) => prev + curr.marks, 0)}{" "}
                 </p>
               </div>
-              <McqAttempForm userID={userID} action={action} test={mcq} />
+              <McqAttempForm userID={user.id} action={action} test={test} />
             </div>
           </div>
         </>
