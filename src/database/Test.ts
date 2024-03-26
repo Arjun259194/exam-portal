@@ -57,6 +57,7 @@ export class TestOperations {
       include: {
         questions: true,
         creater: true, // TODO: add answers to the model and include it here
+        answers: true
       },
     });
 

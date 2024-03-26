@@ -5,7 +5,6 @@ type DefaultMailConfig = { username: string; email: string };
 
 type VerificationMailConfig = {
   type: "Verify";
-  code: string;
   url: string;
 } & DefaultMailConfig;
 
@@ -19,10 +18,16 @@ type DebugMailConfig = {
   message: string[];
 } & DefaultMailConfig;
 
+type TeacherRequestAcceptedMailConfig = {
+  type: "TeacherRequestAccepted";
+  url: string;
+} & DefaultMailConfig;
+
 type MailConfig =
   | VerificationMailConfig
   | NotificationMailConfig
-  | DebugMailConfig;
+  | DebugMailConfig
+  | TeacherRequestAcceptedMailConfig;
 
 export default class MailService {
   private transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo>;
@@ -43,7 +48,6 @@ export default class MailService {
           subject: "Authentication",
           html: this.verificationMailHTML({
             username: config.username,
-            code: config.code,
             url: config.url,
           }),
         });
@@ -52,11 +56,23 @@ export default class MailService {
         // TODO: creating a mail template for notification
         throw new Error("Notification mail template is not yet implemented");
 
+      case "TeacherRequestAccepted":
+        await this.transporter.sendMail({
+          from: "Examify",
+          to: config.email,
+          subject: "Teacher Request Accepted",
+          html: this.teacherRequestAcceptedMailHTML({
+            username: config.username,
+            url: config.url,
+          }),
+        });
+        break;
+
       case "Debug":
         const { formattedTime, isoTime } = this.getCurrentTime();
 
         await this.transporter.sendMail({
-          from: "Qresher.com",
+          from: "Examify",
           to: config.email,
           subject: "Debugging Purposes",
           html: this.debugMailHTML({
@@ -124,8 +140,8 @@ export default class MailService {
         <p><strong>Time of Sending (ISO Format):</strong> ${isoFormat}</p>
         <p><strong>Time of Sending (Formatted):</strong> ${formatted}</p>
         <p><strong>Additional Messages:</strong> ${messages.map(
-          (message) => `<p>${message}</p>`
-        )}</p>
+      (message) => `<p>${message}</p>`,
+    )}</p>
         
 
         <p style="text-align: center; color: #666; margin-top: 20px;">Feel free to modify and use this template for testing your Nodemailer setup.</p>
@@ -137,11 +153,58 @@ export default class MailService {
   `;
   }
 
-  private verificationMailHTML(option: {
+  private teacherRequestAcceptedMailHTML(option: {
     username: string;
-    code: string;
     url: string;
   }) {
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <title>Teacher Request Accepted</title>
+  <style>
+    /* Email container styles */
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Paragraph styles */
+    p {
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    /* Link styles */
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    /* Link hover styles */
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <p>Dear ${option.username},</p>
+    <p>We're thrilled to inform you that your request to become a teacher has been approved!</p>
+    <p>You can now access the teacher dashboard and start creating courses. We encourage you to explore the resources available to you and get familiar with the platform.</p>
+    <p>To get started, please visit the teacher dashboard at: <a href="${option.url}">Teacher Dashboard</a></p>
+    <p>We're excited to have you join our growing community of educators. If you have any questions, please don't hesitate to contact our support team.</p>
+    <p>Thank you,</p>
+  </div>
+</body>
+</html>`;
+  }
+
+  private verificationMailHTML(option: { username: string; url: string }) {
     return `<!DOCTYPE html>
 <html>
 <head>

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import envParse from "@/utils/env";
-import Header from "@/components/UI/Header";
 
 export const metadata: Metadata = {
   title: "Exam portal",
@@ -19,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="text-gray-800 scroll-smooth bg-gray-50">
         {children}
-        <Toaster position="top-right" />
+        <Toaster />
       </body>
     </html>
   );

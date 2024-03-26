@@ -29,6 +29,9 @@ export class OtpOperations {
     this.otp.findFirst({
       where: { userId: id },
       orderBy: { id: "desc" },
+      include: {
+        User: true
+      }
     });
 
   public delete = async (id: string) =>

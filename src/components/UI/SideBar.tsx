@@ -1,4 +1,4 @@
-import { BookText, Home, Info, LucideIcon, UserRound } from "lucide-react";
+import { BookText, Home, Info, LucideIcon, Lock, UserRound } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import LogoutButton from "../Auth/LogoutButton";
@@ -25,7 +25,7 @@ const ListItem: React.FC<ListItemProp> = ({ Icon, path, text }) => (
 
 type Props = Prettify<Omit<User, "password">>;
 
-export const SideBar: React.FC<Props> = ({ email, type, username }) => {
+export const SideBar = ({ email, type, username }: Props) => {
   return (
     <aside className="flex flex-col justify-between text-gray-600 h-screen space-y-5 rounded-r-xl p-3">
       <div className="space-y-5">
@@ -39,12 +39,17 @@ export const SideBar: React.FC<Props> = ({ email, type, username }) => {
           {type === "TEACHER" && (
             <ListItem Icon={BookText} path="/test" text="tests" />
           )}
-          <ListItem Icon={UserRound} path="/user" text="Profile" />
+          {type === "ADMIN" && (
+            <ListItem Icon={Lock} path="/admin" text="admin" />
+          )}
+          {type !== "ADMIN" && (
+            <ListItem Icon={UserRound} path="/user" text="Profile" />
+          )}
         </ul>
       </div>
 
       <div className="">
-        <LogoutButton className="self-end w-full" />
+        <LogoutButton variant="secondary" className="self-end w-full" />
       </div>
     </aside>
   );

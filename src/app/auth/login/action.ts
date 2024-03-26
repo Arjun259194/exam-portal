@@ -3,9 +3,10 @@ import db from "@/database";
 import MailService from "@/lib/email";
 import { PasswordHash } from "@/lib/hash";
 import { loginFormSchema } from "@/lib/schema";
+import { env } from "process";
 
 
-  export default async function action(formData: FormData) {
+export default async function action(formData: FormData) {
   const parsedObj = loginFormSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
@@ -19,11 +20,13 @@ import { loginFormSchema } from "@/lib/schema";
   } = parsedObj;
 
   const foundUser = await db.user.findByEmail(email);
-
   if (!foundUser) throw new Error("User not found");
 
-  const isAuth = await PasswordHash.check(password, foundUser.password);
+  if (foundUser.type === "ADMIN" && foundUser.password !== env.ADMIN_PASSWORD) {
+    throw new Error("not valid password")
+  }
 
+  const isAuth = await PasswordHash.check(password, foundUser.password);
   if (!isAuth) throw new Error("not valid password");
 
   const OTP =
@@ -41,7 +44,6 @@ import { loginFormSchema } from "@/lib/schema";
   try {
     await mailer.sendMail({
       type: "Verify",
-      code: OTP.code,
       email: foundUser.email,
       username: foundUser.username,
       url: u.toString(),

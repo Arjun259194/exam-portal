@@ -1,10 +1,10 @@
-import { MCQAnswer, MCQQuestion, MCQTest, User } from "@prisma/client";
-import db, { prisma } from "./database";
+import { User } from "@prisma/client";
+import db from "./database";
 import { Question } from "./utils/classes";
 
-export type UserRole = "TEACHER" | "STUDENT" //TODO make it type safe
+export type UserRole = Prettify<User['type']>
 
-export type FnFormAction = (arg1: FormData) => Promise<void>
+export type FnFormAction<T> = (arg1: FormData) => Promise<T>
 
 export type Choices = [string, string, string, string]
 
@@ -31,8 +31,11 @@ type IntersectionOfFunctionsToType<F> =
 type SplitType<T> =
   IntersectionOfFunctionsToType<UnionToIntersection<UnionToFunctions<T>>>;
 
-export type TestMcq = SplitType<NonNullable<Awaited<ReturnType<typeof db.test.get>>>>[0]
-export type TestWritten = SplitType<NonNullable<Awaited<ReturnType<typeof db.test.get>>>>[1]
+export type Test = NonNullable<Awaited<ReturnType<typeof db.test.get>>>
+export type Tests = NonNullable<Awaited<ReturnType<typeof db.test.getMany>>>
+
+export type TestMcq = SplitType<Test>[0]
+export type TestWritten = SplitType<Test>[1]
 
 
 export type WrittenTest = Awaited<

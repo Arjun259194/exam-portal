@@ -73,3 +73,11 @@ input {
   background-attachment: fixed;
   background-size: cover;
 }
+
+.comic-box-black {
+  box-shadow: 6px 6px 0 black;
+}
+
+.comic-box-white {
+  box-shadow: 6px 6px 0 white;
+}

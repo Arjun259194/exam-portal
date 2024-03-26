@@ -18,6 +18,7 @@ class Database {
       prisma.writtenQuenstion,
     );
   }
+
 }
 
 export const prisma = new PrismaClient()

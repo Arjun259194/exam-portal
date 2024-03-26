@@ -1,29 +1,22 @@
 import Button from "../UI/Button";
 import Link from "next/link";
-import { Pick } from "@prisma/client/runtime/library";
-import { McqTest, WrittenTest } from "@/types";
+import { TestMcq, TestWritten } from "@/types";
 import IconButton from "../UI/IconButton";
 import { ChevronRight } from "lucide-react"
 
 type Props = (
-  | ({ type: "MCQ" } & Pick<
-    McqTest,
-    "id" | "title" | "questions" | "subject" | "creater"
-  >)
-  | ({ type: "WRITTEN" } & Pick<
-    WrittenTest,
-    "id" | "title" | "questions" | "subject" | "creater"
-  >)
+  | TestMcq
+  | TestWritten
 ) & {
   userRole: "STUDENT" | "TEACHER";
 };
 
-const Test: React.FC<Props> = (props) => {
+const Test: React.FC<Props> = (props: Props) => {
   const { id, questions, title, subject, creater, type, userRole } = props;
   const totalMarks = questions.reduce((prev, curr) => prev + curr.marks, 0);
   const totalQuestions = questions.length;
   return (
-    <article className="flex items-start shadow-md py-3 px-5 space-y-3 border border-gray-200 rounded-md m-1 min-w-64 flex-col">
+    <article className="flex items-start py-3 px-5 comic-box-black space-y-3 border border-black rounded-md m-1 min-w-64 flex-col">
       <h2 className="text-lg capitalize text-gray-800 font-semibold">
         {title}
       </h2>

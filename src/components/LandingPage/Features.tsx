@@ -16,7 +16,7 @@ interface Props {
   index: number;
 }
 
-const Card: React.FC<Props> = ({ title, Icon, text }) => {
+const Card: React.FC<Props> = ({ title, Icon, text }: Props) => {
   return (
     <article
       className={`

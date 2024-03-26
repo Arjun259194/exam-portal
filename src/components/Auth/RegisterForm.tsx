@@ -1,22 +1,25 @@
 "use client";
 import { RedirectType, redirect } from "next/navigation";
-import { FC, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import Button from "../UI/Button";
 import InputText from "../UI/TextInput";
-import { FnFormAction } from "@/types";
+import action from "@/app/auth/register/action";
 
-const RegisterForm: FC<{ action: FnFormAction }> = ({
-  action,
-}) => {
+const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   async function actionHandler(formData: FormData) {
     let isRedirect = false;
     try {
-      await action(formData);
+      const res = await action(formData);
       toast.success("User registered");
-      isRedirect = true;
+      if (res === "Request Sended to Admin\nYou will be notified on the given email") {
+        isRedirect = false
+      } else {
+        isRedirect = true;
+      }
+      toast.success(res)
     } catch (error) {
       console.error(error)
       toast.error(`${error}`);

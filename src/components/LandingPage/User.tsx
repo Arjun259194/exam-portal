@@ -10,7 +10,7 @@ interface CardProps {
   Icon: LucideIcon;
 }
 
-const Card: React.FC<CardProps> = ({ Icon, role, children, title }) => {
+const Card: React.FC<CardProps> = ({ Icon, role, children, title }: CardProps) => {
   return (
     <div className=" border border-green-500 shadow-xl shadow-green-300 rounded-lg p-5 flex flex-col items-center text-center space-y-3">
       <Icon className="size-28" />

@@ -3,6 +3,7 @@ import { AuthCookie } from "@/lib/cookie";
 import { JWTToken } from "@/lib/jwt";
 import { redirect } from "next/navigation";
 
+
 export function getUserId() {
   const token = AuthCookie.getToken();
   if (!!token) {
@@ -15,22 +16,29 @@ export function getUserId() {
 }
 
 export async function getSessionUser() {
-  console.log("Getting Session Data...");
   const userID = getUserId();
-  console.log("Got user id: ", userID);
 
   if (!userID) redirect("/auth/login")
 
   const user = await db.user.findById(userID).catch((error) => {
-    console.error("error while fetching user: ", error);
+    console.error(error);
     redirect("/auth/login");
   });
 
   if (!user) {
-    console.log("User not found in Database");
     redirect("/auth/login");
   } else {
-    console.log("Got user info: ", user);
     return user;
   }
 }
+
+export const handle = <FnReturnType>(fn: () => FnReturnType) => {
+  try {
+    return fn()
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+
+

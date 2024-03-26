@@ -7,7 +7,7 @@ type Props = Parameters<typeof Button>[0] & {
   reverse?: boolean
 }
 
-const IconButton: React.FC<Props> = ({ children, Icon, reverse, className, ...props }) => {
+const IconButton: React.FC<Props> = ({ children, Icon, reverse, className, ...props }: Props) => {
   return (
     <Button className={`flex ${!reverse ? "flex-row" : "flex-row-reverse"} items-center gap-1 ${className}`} {...props}>
       <span>

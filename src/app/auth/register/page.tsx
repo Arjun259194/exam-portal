@@ -11,7 +11,7 @@ function page() {
           Register Form
         </h1>
         <p>New? Join us and have a flowless expireance</p>
-        <RegisterForm action={action} />
+        <RegisterForm />
         <p>
           Already have an account?{" "}
           <Link
