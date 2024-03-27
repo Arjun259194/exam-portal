@@ -54,16 +54,15 @@ const McqAttempForm: React.FC<Props> = ({ test, action, userID }) => {
     <form onSubmit={submitionHandler} className="space-y-3 w-3/4 mx-auto">
       {test.questions.map((q, i) => {
         return (
-          <article className="w-full space-y-5 shadow-sm border border-gray-200  p-5 rounded-md">
+          <article className="w-full space-y-5 shadow-sm border border-gray-800  p-5 rounded-md">
             <div className="flex justify-between items-center text-lg capitalize">
               <p className="text-lg">{q.question}</p>
               <span className="text-sm">{q.marks}</span>
             </div>
-            {/* <div className="flex justify-evenly items-center"> */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               {q.choices.map((c, j) => {
                 return (
-                  <div className="flex capitalize p-1 rounded-md hover:bg-green-100 text-lg space-x-2">
+                  <div className="flex comic-box-black border-2 border-black capitalize p-1 rounded-md hover:bg-green-100 text-lg space-x-2">
                     <input
                       type="radio"
                       value={String.fromCharCode(97 + j) + "." + c}

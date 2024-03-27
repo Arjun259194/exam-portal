@@ -1,19 +1,19 @@
 import Button from "../UI/Button";
 import Link from "next/link";
-import { TestMcq, TestWritten } from "@/types";
+import { TestMcq, TestWritten, UserRole } from "@/types";
 import IconButton from "../UI/IconButton";
-import { ChevronRight } from "lucide-react"
+import { ChevronRight } from "lucide-react";
 
-type Props = (
-  | TestMcq
-  | TestWritten
-) & {
-  userRole: "STUDENT" | "TEACHER";
+type Props = (TestMcq | TestWritten) & {
+  userRole: UserRole;
 };
 
-const Test: React.FC<Props> = (props: Props) => {
+const Test = (props: Props) => {
   const { id, questions, title, subject, creater, type, userRole } = props;
-  const totalMarks = questions.reduce((prev, curr) => prev + curr.marks, 0);
+  const totalMarks =
+    type === "MCQ"
+      ? questions.reduce((prev, curr) => prev + curr.marks, 0)
+      : questions.reduce((prev, curr) => prev + curr.marks, 0);
   const totalQuestions = questions.length;
   return (
     <article className="flex items-start py-3 px-5 comic-box-black space-y-3 border border-black rounded-md m-1 min-w-64 flex-col">
@@ -46,7 +46,9 @@ const Test: React.FC<Props> = (props: Props) => {
       )}
       {userRole === "TEACHER" && (
         <Link href={`/test/info/${id}/`}>
-          <IconButton reverse Icon={ChevronRight} variant="secondary">More</IconButton>
+          <IconButton reverse Icon={ChevronRight} variant="secondary">
+            More
+          </IconButton>
         </Link>
       )}
     </article>

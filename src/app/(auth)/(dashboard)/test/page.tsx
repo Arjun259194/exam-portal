@@ -18,7 +18,9 @@ const page = async () => {
     return { ...t, type: "WRITTEN" } as const
   })
 
-  const CONDITION = fMcq.length <= 0 || fWritten.length <= 0;
+  const CONDITION = fMcq.length > 0 || fWritten.length > 0;
+
+  console.log("test page condition: ", CONDITION)
 
   return (
     <div className="">

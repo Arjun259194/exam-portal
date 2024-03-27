@@ -10,7 +10,6 @@ const page = async () => {
   if (CONDITION) {
     redirect("/message");
   }
-
   return (
     <>
       <section className="w-full space-y-5 p-2 rounded-md ">

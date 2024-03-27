@@ -70,6 +70,7 @@ model MCQAnswer {
   test    MCQTest  @relation(fields: [testId], references: [id])
   answers String[]
   userId  String   @db.ObjectId
+  checked Boolean  @default(false)
 }
 
 model WrittenTest {

@@ -3,7 +3,6 @@
 import { Check, Trash, UserRoundX } from "lucide-react";
 import toast from "react-hot-toast";
 
-
 interface Props {
   dataNState: PromiseSettledResult<
     {
@@ -17,20 +16,26 @@ interface Props {
   rejectFn: (arg1: FormData) => Promise<void>;
 }
 
-
 async function errWrapper(fn: () => Promise<void>) {
   try {
-    return await fn()
+    return await fn();
   } catch (error) {
-    console.error(error)
-    toast.error("Something went wrong")
+    console.error(error);
+    toast.error("Something went wrong");
   }
 }
 
 export default function AdminReq({ dataNState, acceptFn, rejectFn }: Props) {
   return (
     <div className="comic-box-black col-span-2 rounded-lg p-1 border-2 border-black rounde">
-      <h2 className="capitalize font-semibold text-lg">Teacher request</h2>
+      <div className="flex items-center justify-between mx-2">
+        <h2 className="capitalize font-semibold text-lg">Teacher request</h2>
+        <span>
+          {dataNState.status === "rejected" || dataNState.value.length <= 0
+            ? `0`
+            : `${dataNState.value.length}`}
+        </span>
+      </div>
       <hr />
       <div className="max-h-48 min-h-48 overflow-y-auto space-y-2">
         {dataNState.status === "rejected" || dataNState.value.length <= 0 ? (
@@ -56,8 +61,13 @@ export default function AdminReq({ dataNState, acceptFn, rejectFn }: Props) {
                       errWrapper(async () => {
                         const f = new FormData();
                         f.set("id", r.id);
-                        await rejectFn(f);
-                      })
+                        const p = rejectFn(f);
+                        toast.promise(p, {
+                          loading: "Processing...",
+                          success: "Request rejected",
+                          error: "Something went wrong"
+                        })
+                      });
                     }}
                   >
                     <Trash />
@@ -68,9 +78,14 @@ export default function AdminReq({ dataNState, acceptFn, rejectFn }: Props) {
                       errWrapper(async () => {
                         const f = new FormData();
                         f.set("id", r.id);
-                        f.set("origin", window.location.origin)
-                        await acceptFn(f);
-                      })
+                        f.set("origin", window.location.origin);
+                        const p = acceptFn(f);
+                        toast.promise(p, {
+                          loading: "Processing...",
+                          success: "Request accepted\nEmail sent",
+                          error: "Something went wrong"
+                        })
+                      });
                     }}
                   >
                     <Check />

@@ -31,6 +31,7 @@ type IntersectionOfFunctionsToType<F> =
 type SplitType<T> =
   IntersectionOfFunctionsToType<UnionToIntersection<UnionToFunctions<T>>>;
 
+
 export type Test = NonNullable<Awaited<ReturnType<typeof db.test.get>>>
 export type Tests = NonNullable<Awaited<ReturnType<typeof db.test.getMany>>>
 

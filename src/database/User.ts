@@ -1,7 +1,6 @@
 import { PasswordHash } from "@/lib/hash";
 import { PrismaClient } from "@prisma/client";
 import { type User } from "@prisma/client";
-import { prisma } from ".";
 
 type UserConfig = Omit<User, "id">;
 type DBUser = PrismaClient["user"];
@@ -12,6 +11,17 @@ export class UserOperations {
   constructor(user: DBUser) {
     this.user = user;
   }
+
+  public delete = async (id: string) =>
+    await this.user.delete({
+      where: { id }, include: {
+        Otp: true,
+        MCQTest: true,
+        MCQAnswer: true,
+        WrittenTest: true,
+        WrittenAnswer: true
+      }
+    })
 
 
   public new = async (newUser: UserConfig) =>

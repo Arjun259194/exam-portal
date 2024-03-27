@@ -23,11 +23,18 @@ type TeacherRequestAcceptedMailConfig = {
   url: string;
 } & DefaultMailConfig;
 
+type ResultMailConfig = {
+  type: "Result";
+  score: boolean[];
+  testName: string;
+} & DefaultMailConfig;
+
 type MailConfig =
   | VerificationMailConfig
   | NotificationMailConfig
   | DebugMailConfig
-  | TeacherRequestAcceptedMailConfig;
+  | TeacherRequestAcceptedMailConfig
+  | ResultMailConfig;
 
 export default class MailService {
   private transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo>;
@@ -49,6 +56,18 @@ export default class MailService {
           html: this.verificationMailHTML({
             username: config.username,
             url: config.url,
+          }),
+        });
+        break;
+      case "Result":
+        this.transporter.sendMail({
+          to: config.email,
+          from: "Examify",
+          subject: `Result of ${config.testName}`,
+          html: this.templeTestResultMailHTML({
+            score: config.score,
+            username: config.username,
+            testTitle: config.testName,
           }),
         });
         break;
@@ -151,6 +170,80 @@ export default class MailService {
     </body>
     </html>
   `;
+  }
+
+  public templeTestResultMailHTML(option: {
+    score: boolean[];
+    username: string;
+    testTitle: string;
+  }) {
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <title>Temple Test Results</title>
+  <style>
+    /* Email container styles */
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      text-align: left;
+      font-weight: bold;
+    }
+
+    /* Paragraph styles */
+    p {
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <p>Dear ${option.username},</p>
+    <p>Here are your results from your recent test: ${option.testTitle}</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Question no.</th>
+          <th>score</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${option.score.map((s, i) => `<tr>
+            <td>${i + 1}</td>
+            <td>${s}</td>
+          </tr>`
+    ).join("")}
+      </tbody>
+    </table>
+
+    <p>We encourage you to review your results and continue your studies.</p>
+    <p>Thank you for participating in the test.</p>
+    <p>Sincerely,</p>
+    <p>Examify</p>
+  </div>
+</body>
+</html>`;
   }
 
   private teacherRequestAcceptedMailHTML(option: {

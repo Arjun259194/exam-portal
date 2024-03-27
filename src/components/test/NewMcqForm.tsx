@@ -39,8 +39,10 @@ function NewMcqForm() {
   const createTest = async () => {
     setLoading(true);
     try {
-      await axios.post("/api/mcq/test/new", { title, subject, questions });
-      toast.success("Test created 👍");
+      const p = axios.post("/api/mcq/test/new", { title, subject, questions });
+      await toast.promise(p, {
+        loading: "Processing...", success: "Test created", error: "Something went wrong",
+      })
       window.location.href = "/test";
     } catch (error) {
       console.error(error);

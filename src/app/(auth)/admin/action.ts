@@ -73,21 +73,23 @@ export async function removeUser(formdata: FormData) {
   const id = formdata.get("id");
   if (!id) throw new Error("No id provided");
 
-  console.log("function called")
+  console.log("function called");
   console.log("id:", id.toString());
 
+  await prisma.otp.deleteMany({ where: { userId: id.toString() } });
+  await db.user.delete(id.toString());
 
-  await prisma.otp.deleteMany({ where: { userId: id.toString() } })
-  await prisma.user.delete({
-    where: { id: id.toString() }, include: {
-      Otp: true,
-      MCQTest: true,
-      MCQAnswer: true,
-      WrittenTest: true,
-      WrittenAnswer: true
-    }
-  })
-
-  revalidatePath("/admin")
+  revalidatePath("/admin");
   return;
+}
+
+export async function removeTest(formdata: FormData) {
+  const id = formdata.get("id");
+  if (!id) throw new Error("Id not found");
+  try {
+    await db.test.delete(id.toString());
+  } catch (error) {
+    console.error(error);
+    throw new Error("Something went wrong");
+  }
 }

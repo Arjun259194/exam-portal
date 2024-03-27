@@ -50,14 +50,18 @@ export class TestOperations {
 
   public async getMany() {
     const mcqTest = await this.mcqTest.findMany({
-      include: { questions: true, creater: true, answers: { include: { user: true } } },
+      include: {
+        questions: true,
+        creater: true,
+        answers: { include: { user: true } },
+      },
     });
 
     const writtenTest = await this.writtenTest.findMany({
       include: {
         questions: true,
         creater: true, // TODO: add answers to the model and include it here
-        answers: true
+        answers: true,
       },
     });
 
@@ -78,11 +82,24 @@ export class TestOperations {
 
     const writtenTest = await this.writtenTest.findFirst({
       where: { id: testId },
-      include: { creater: true, questions: true }, //TODO: add answers to the model and include it
+      include: { creater: true, questions: true, answers: true },
     });
 
     if (writtenTest) return { ...writtenTest, type: "WRITTEN" } as const;
 
     return null;
   }
+
+  public delete = async (id: string) => {
+    Promise.all([
+      await this.mcqTest.delete({
+        where: { id: id },
+        include: { answers: true, questions: true },
+      }),
+      await this.writtenTest.delete({
+        where: { id: id },
+        include: { answers: true, questions: true },
+      }),
+    ]);
+  };
 }

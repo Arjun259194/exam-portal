@@ -4,12 +4,12 @@ import db, { prisma } from "@/database";
 import { getSessionUser } from "@/utils";
 import { accept, reject } from "./action";
 import User from "@/components/Admin/User";
-import { File, Trash } from "lucide-react";
 import Tests from "@/components/Admin/Tests";
+import { redirect } from "next/navigation";
 
 export default async function page() {
   const user = await getSessionUser();
-  // if (user.type !== "ADMIN") redirect("/dashboard")
+  if (user.type !== "ADMIN") redirect("/dashboard")
 
   const requests = [
     db.user.all(),
