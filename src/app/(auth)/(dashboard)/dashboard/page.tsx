@@ -7,9 +7,7 @@ const page = async () => {
   const user = await getSessionUser();
   const { written, mcq } = await db.test.getMany();
   const CONDITION = mcq.length <= 0 && written.length <= 0;
-  if (CONDITION) {
-    redirect("/message");
-  }
+
   return (
     <>
       <section className="w-full space-y-5 p-2 rounded-md ">

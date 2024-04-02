@@ -1,10 +1,8 @@
 import Card from "@/components/Card";
-import IconButton from "@/components/UI/IconButton";
 import Title from "@/components/UI/Title";
+import CreateTestButton from "@/components/test/CreateTestButton";
 import db from "@/database";
 import { getSessionUser } from "@/utils";
-import { Plus } from "lucide-react";
-import Link from "next/link";
 
 const page = async () => {
   const user = await getSessionUser();
@@ -28,11 +26,12 @@ const page = async () => {
         <>
           <div className="flex py-5 justify-between">
             <h1 className="text-4xl capitalize ">Available Tests</h1>
-            <Link href="/test/mcq/new">
-              <IconButton Icon={Plus} reverse={false}>
-                Create New
-              </IconButton>
-            </Link>
+            {/* <Link href="/test/mcq/new"> */}
+            {/*   <IconButton Icon={Plus} reverse={false}> */}
+            {/*     Create New */}
+            {/*   </IconButton> */}
+            {/* </Link> */}
+            <CreateTestButton />
           </div>
         </>
       ) : null}
@@ -50,11 +49,12 @@ const page = async () => {
           {/* TODO: Make this better */}
           <Title>Hmm!</Title>
           <p>No Test created by you yet</p>
-          <Link href="/test/mcq/new">
-            <IconButton variant="secondary" Icon={Plus} reverse={false}>
-              Create New
-            </IconButton>
-          </Link>
+          {/* <Link href="/test/mcq/new"> */}
+          {/*   <IconButton variant="secondary" Icon={Plus} reverse={false}> */}
+          {/*     Create New */}
+          {/*   </IconButton> */}
+          {/* </Link> */}
+          <CreateTestButton />
         </div>
       )}
     </div>

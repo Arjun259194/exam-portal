@@ -24,11 +24,12 @@ model TeacherRequest {
 }
 
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  username      String
-  email         String          @unique
-  password      String
-  type          UserType
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  username String
+  email    String   @unique
+  password String
+  type     UserType
+
   Otp           Otp[]
   MCQTest       MCQTest[]
   WrittenTest   WrittenTest[]
@@ -43,14 +44,52 @@ model AttendedTest {
 }
 
 model MCQTest {
-  id        String        @id @default(auto()) @map("_id") @db.ObjectId
-  createrId String        @db.ObjectId
-  creater   User          @relation(fields: [createrId], references: [id])
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  createrId String @db.ObjectId
+  creater   User   @relation(fields: [createrId], references: [id])
   title     String
   subject   String
-  publish   Boolean
+
   questions MCQQuestion[]
   answers   MCQAnswer[]
+
+  createdAt  DateTime @default(now())
+  releaseAt  DateTime
+  withholdAt DateTime
+}
+
+model WrittenTest {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  createrId String @map("userId") @db.ObjectId
+  creater   User   @relation(fields: [createrId], references: [id])
+  title     String
+  subject   String
+
+  questions WrittenQuenstion[]
+  answers   WrittenAnswer[]
+
+  createdAt  DateTime @default(now())
+  releaseAt  DateTime
+  withholdAt DateTime
+}
+
+model TypingTest {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  title   String
+  subject String
+
+  questions     TypingQuestions[]
+  TypeingAnswer TypeingAnswer[]
+
+  createdAt  DateTime @default(now())
+  releaseAt  DateTime
+  withholdAt DateTime
+}
+
+model TypeingAnswer {
+  id     String     @id @default(auto()) @map("_id") @db.ObjectId
+  test   TypingTest @relation(fields: [testID], references: [id])
+  testID String     @db.ObjectId
 }
 
 model WrittenAnswer {
@@ -73,33 +112,31 @@ model MCQAnswer {
   checked Boolean  @default(false)
 }
 
-model WrittenTest {
-  id        String             @id @default(auto()) @map("_id") @db.ObjectId
-  createrId String             @map("userId") @db.ObjectId
-  creater   User               @relation(fields: [createrId], references: [id])
-  title     String
-  subject   String
-  publish   Boolean
-  questions WrittenQuenstion[]
-  answers   WrittenAnswer[]
+model WrittenQuenstion {
+  id       String      @id @default(auto()) @map("_id") @db.ObjectId
+  question String
+  marks    Int
+  testId   String      @db.ObjectId
+  test     WrittenTest @relation(fields: [testId], references: [id])
 }
 
-model WrittenQuenstion {
-  id               String      @id @default(auto()) @map("_id") @db.ObjectId
-  question         String
-  marks            Int
-  optionalQuestion String
-  testId           String      @db.ObjectId
-  test             WrittenTest @relation(fields: [testId], references: [id])
+model TypingQuestions {
+  id       String      @id @default(auto()) @map("_id") @db.ObjectId
+  test     TypingTest? @relation(fields: [testID], references: [id])
+  testID   String?     @db.ObjectId
+  question String
+  marks    Int
 }
 
 model MCQQuestion {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  MCQTest  MCQTest  @relation(fields: [testId], references: [id])
-  testId   String   @db.ObjectId
-  question String
-  marks    Int
-  choices  String[]
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  question      String
+  marks         Int
+  choices       String[]
+  correctAnswer String
+
+  MCQTest MCQTest @relation(fields: [testId], references: [id])
+  testId  String  @db.ObjectId
 }
 
 model Otp {

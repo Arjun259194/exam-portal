@@ -1,7 +1,7 @@
-import { McqTest } from '@/types'
+import { TestMcq} from '@/types'
 import React from 'react'
 
-interface Props extends McqTest { }
+interface Props extends TestMcq { }
 
 const McqAnswerInspect: React.FC<Props> = async props => {
   const { questions, answers, id: testID, title, creater, publish, subject } = props

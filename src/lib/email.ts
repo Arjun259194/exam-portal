@@ -1,45 +1,11 @@
+import { MailConfig } from "@/types";
 import nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 
-type DefaultMailConfig = { username: string; email: string };
-
-type VerificationMailConfig = {
-  type: "Verify";
-  url: string;
-} & DefaultMailConfig;
-
-type NotificationMailConfig = {
-  type: "Notification";
-  message: string[];
-} & DefaultMailConfig;
-
-type DebugMailConfig = {
-  type: "Debug";
-  message: string[];
-} & DefaultMailConfig;
-
-type TeacherRequestAcceptedMailConfig = {
-  type: "TeacherRequestAccepted";
-  url: string;
-} & DefaultMailConfig;
-
-type ResultMailConfig = {
-  type: "Result";
-  score: boolean[];
-  testName: string;
-} & DefaultMailConfig;
-
-type MailConfig =
-  | VerificationMailConfig
-  | NotificationMailConfig
-  | DebugMailConfig
-  | TeacherRequestAcceptedMailConfig
-  | ResultMailConfig;
-
-export default class MailService {
+export default class MailService<Config extends { user: string; pass: string }>  {
   private transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo>;
 
-  constructor(config: { user: string; pass: string }) {
+  constructor(config: Config) {
     this.transporter = nodemailer.createTransport({
       service: "gmail",
       auth: config,
@@ -159,8 +125,8 @@ export default class MailService {
         <p><strong>Time of Sending (ISO Format):</strong> ${isoFormat}</p>
         <p><strong>Time of Sending (Formatted):</strong> ${formatted}</p>
         <p><strong>Additional Messages:</strong> ${messages.map(
-      (message) => `<p>${message}</p>`,
-    )}</p>
+          (message) => `<p>${message}</p>`,
+        )}</p>
         
 
         <p style="text-align: center; color: #666; margin-top: 20px;">Feel free to modify and use this template for testing your Nodemailer setup.</p>
@@ -229,11 +195,14 @@ export default class MailService {
         </tr>
       </thead>
       <tbody>
-        ${option.score.map((s, i) => `<tr>
+        ${option.score
+          .map(
+            (s, i) => `<tr>
             <td>${i + 1}</td>
             <td>${s}</td>
-          </tr>`
-    ).join("")}
+          </tr>`,
+          )
+          .join("")}
       </tbody>
     </table>
 

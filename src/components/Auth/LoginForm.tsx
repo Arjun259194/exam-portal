@@ -7,7 +7,7 @@ import Button from "../UI/Button";
 import InputText from "../UI/TextInput";
 import { useForm } from "@/hooks/useForm";
 
-const LoginForm: FC<{ action: FnFormAction }> = ({ action }) => {
+const LoginForm: FC<{ action: FnFormAction<void> }> = ({ action }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [state, changeHandler] = useForm({
     email: "",

@@ -5,7 +5,6 @@ import { PasswordHash } from "@/lib/hash";
 import { loginFormSchema } from "@/lib/schema";
 import { env } from "process";
 
-
 export default async function action(formData: FormData) {
   const parsedObj = loginFormSchema.safeParse({
     email: formData.get("email"),
@@ -22,12 +21,15 @@ export default async function action(formData: FormData) {
   const foundUser = await db.user.findByEmail(email);
   if (!foundUser) throw new Error("User not found");
 
-  if (foundUser.type === "ADMIN" && foundUser.password !== env.ADMIN_PASSWORD) {
-    throw new Error("not valid password")
+  if (foundUser.type === "ADMIN") {
+    if (foundUser.password !== env.ADMIN_PASSWORD) {
+      throw new Error("not valid password")
+    }
+  } else {
+    const isAuth = await PasswordHash.check(password, foundUser.password);
+    if (!isAuth) throw new Error("not valid password");
   }
 
-  const isAuth = await PasswordHash.check(password, foundUser.password);
-  if (!isAuth) throw new Error("not valid password");
 
   const OTP =
     (await db.otp.find(foundUser.id)) || (await db.otp.new(foundUser.id));

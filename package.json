@@ -10,6 +10,7 @@
     "prisma": "npx prisma generate"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.18",
     "@prisma/client": "5.8.1",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.5",
