@@ -75,7 +75,7 @@ input {
 }
 
 .comic-box-black {
-  box-shadow: 6px 6px 0 black;
+  box-shadow: 6px 6px 0 #2f2f2faf;
 }
 
 .comic-box-white {

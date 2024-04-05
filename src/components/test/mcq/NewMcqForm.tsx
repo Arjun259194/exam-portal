@@ -3,20 +3,21 @@
 import React, { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 import McqQuestions from "./McqQuestions";
-import { Question } from "@/utils/classes";
+import { MCQQuesion } from "@/utils/classes";
 import { ClassName, Choices } from "@/types";
-import { Plus, RefreshCw, Send } from "lucide-react";
-import IconButton from "../UI/IconButton";
+import { Plus, Send } from "lucide-react";
+import IconButton from "../../UI/IconButton";
 import axios from "axios";
 
 function NewMcqForm() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [formState, setFormState] = useState<Question>(new Question());
+  const [formState, setFormState] = useState<MCQQuesion>(new MCQQuesion());
   const [title, setTitle] = useState<string>("");
   const [subject, setSubject] = useState<string>("");
-  const [questions, setQuestions] = useState<Array<Question>>([]);
+  const [questions, setQuestions] = useState<Array<MCQQuesion>>([]);
+  const [releaseDate, setReleaseDate] = useState<string>("");
+  const [withholdDate, setWithholdDate] = useState<string>("");
 
-  const addQuestion = (q: Question) => setQuestions([...questions, q]);
+  const addQuestion = (q: MCQQuesion) => setQuestions([...questions, q]);
 
   const optionChangeHandler = (
     index: number,
@@ -26,47 +27,47 @@ function NewMcqForm() {
     setFormState((prevState) => {
       const newOptions: Choices = [...prevState.choices];
       newOptions[index] = value;
-      return { ...prevState, choices: newOptions } satisfies Question;
+      return { ...prevState, choices: newOptions } satisfies MCQQuesion;
     });
   };
 
   const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
+    if (!formState.choices.includes(formState.correctAnswer))
+      return toast.error("Correct answer not matching the choices");
+
     addQuestion(formState);
-    setFormState(new Question());
+    setFormState(new MCQQuesion());
   };
 
   const createTest = async () => {
-    setLoading(true);
-    try {
-      const p = axios.post("/api/mcq/test/new", { title, subject, questions });
-      await toast.promise(p, {
-        loading: "Processing...", success: "Test created", error: "Something went wrong",
-      })
-      window.location.href = "/test";
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to create the test");
-    } finally {
-      setLoading(false);
+    const releaseAt = new Date(releaseDate);
+    const withholdAt = new Date(withholdDate);
+
+    const time1 = releaseAt.getTime();
+    const time2 = withholdAt.getTime();
+
+    if (time1 >= time2) {
+      return toast.error(
+        "Release date can't be same or greater then withhold date",
+      );
     }
+
+    const p = axios.post("/api/mcq/test/new", { title, subject, questions, releaseDate: releaseAt, withholdDate: withholdAt });
+    await toast.promise(p, {
+      loading: "Processing...",
+      success: () => {
+        window.location.href = "/test";
+        return "successfully created";
+      },
+      error: "Something went wrong",
+    });
   };
 
   const inputStyle: ClassName = "border border-gray-300 rounded-md p-2 mb-4";
 
   return (
     <>
-      {!!loading ? (
-        <>
-          <div className="fixed inset-0 bg-gray-900/80 flex justify-center items-center">
-            <div className="bg-gray-100/90 aspect-square p-10 text-center capitalize font-semibold rounded-full">
-              <RefreshCw className="animate-spin w-28 h-28" />
-              <p className="text-xl">Loading...</p>
-            </div>
-          </div>
-        </>
-      ) : null}
-
       <div className="grid grid-cols-2 gap-2">
         <form onSubmit={submitHandler} className="mb-8">
           <div className="grid border-2 border-gray-200 rounded-lg p-2 grid-cols-4">
@@ -96,6 +97,32 @@ function NewMcqForm() {
               type="text"
               placeholder="Maths"
             />
+
+            <div className="flex col-span-full flex-col p-2">
+              <label htmlFor="releaseDate">Release Date</label>
+              <input
+                onChange={(e) => {
+                  setReleaseDate((_) => e.target.value);
+                }}
+                value={releaseDate}
+                className="block w-full rounded-md border  border-gray-300 px-3 py-2 text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                id="releaseDate"
+                type="datetime-local"
+              />
+            </div>
+
+            <div className="flex flex-col p-2 col-span-full">
+              <label htmlFor="withholdDate">Withhold Date</label>
+              <input
+                onChange={(e) => {
+                  setWithholdDate((_) => e.target.value);
+                }}
+                value={withholdDate}
+                className="block w-full rounded-md border  border-gray-300 px-3 py-2 text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                id="releaseDate"
+                type="datetime-local"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-4 p-2">
@@ -154,6 +181,25 @@ function NewMcqForm() {
               />
             ))}
           </div>
+          <div className="flex flex-col w-full p-2">
+            <label className="" htmlFor="correctAnswer">
+              Correct answer
+            </label>
+            <input
+              required
+              className={`${inputStyle}`}
+              id="correctAnswer"
+              onChange={(e) => {
+                const { value } = e.target;
+                setFormState((prev) => ({ ...prev, correctAnswer: value }));
+              }}
+              name="correctAnswer"
+              value={formState.correctAnswer}
+              type="text"
+              placeholder="Enter correct choice"
+            />
+          </div>
+
           <div className="w-full justify-between flex items-center gap-3">
             <IconButton
               Icon={Plus}
@@ -161,15 +207,14 @@ function NewMcqForm() {
               variant="secondary"
               reverse={false}
             >
-              {" "}
-              Add question{" "}
+              Add question
             </IconButton>
             <IconButton
               onClick={(e) => {
                 e.preventDefault();
                 createTest();
               }}
-              disabled={questions.length <= 4}
+              disabled={questions.length <= 0}
               Icon={Send}
               variant="primary"
               reverse={false}

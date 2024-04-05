@@ -1,16 +1,45 @@
-import { Question } from "@/utils/classes";
-import { PrismaClient, WrittenTest } from "@prisma/client";
+import { CommonTestProps } from "@/types";
+import { MCQQuesion, TypingQuesion, WrittenQuestion } from "@/utils/classes";
+import { PrismaClient } from "@prisma/client";
 
 type DBWrittenQuestion = PrismaClient["writtenQuenstion"];
 type DBWriitenTest = PrismaClient["writtenTest"];
 type DBMcqTest = PrismaClient["mCQTest"];
 type DBMCQQuestion = PrismaClient["mCQQuestion"];
-type NewQuestionParam = {
-  subject: string;
+type DBTypingTest = PrismaClient["typingTest"];
+type DBTypingQuestion = PrismaClient["typingQuestions"];
+
+interface NewMcqTest {
+  type: "MCQ";
   title: string;
+  subject: string;
   userID: string;
-  questions: Question[];
-};
+  questions: MCQQuesion[];
+  releaseAt: Date;
+  withholdAt: Date;
+}
+
+interface NewWrittenTest {
+  type: "WRITTEN";
+  title: string;
+  subject: string;
+  userID: string;
+  questions: WrittenQuestion[];
+  releaseAt: Date;
+  withholdAt: Date;
+}
+
+interface NewTypingTest {
+  type: "Typing";
+  title: string;
+  subject: string;
+  userID: string;
+  questions: TypingQuesion[];
+  releaseAt: Date;
+  withholdAt: Date;
+}
+
+type NewTestParam = NewMcqTest | NewWrittenTest | NewTypingTest;
 
 export class TestOperations {
   constructor(
@@ -18,15 +47,18 @@ export class TestOperations {
     private mcqQuestion: DBMCQQuestion,
     private writtenTest: DBWriitenTest,
     private writtenQuestion: DBWrittenQuestion,
+    private typingTest: DBTypingTest,
+    private typingQuesion: DBTypingQuestion,
   ) { }
 
-  public async new({ questions, ...param }: NewQuestionParam) {
+  private async createNewMcqTest({ questions, ...param }: NewMcqTest) {
     const res = await this.mcqTest.create({
       data: {
         createrId: param.userID,
-        publish: false, // user will public it later
         title: param.title,
         subject: param.subject,
+        releaseAt: param.releaseAt,
+        withholdAt: param.withholdAt,
       },
     });
 
@@ -42,10 +74,85 @@ export class TestOperations {
             },
           }),
       ),
-    ).catch(async (err) => {
-      await this.mcqTest.delete({ where: { id: res.id } });
-      throw new Error("Failed to create questions with error ", err);
+    );
+  }
+
+  private async createNewWrittenTest(param: NewWrittenTest) {
+    const res = await this.writtenTest.create({
+      data: {
+        withholdAt: param.withholdAt,
+        releaseAt: param.releaseAt,
+        title: param.title,
+        subject: param.subject,
+        createrId: param.userID,
+      },
     });
+
+    await Promise.all(
+      param.questions.map(async (q) => {
+        return await this.writtenQuestion.create({
+          data: {
+            ...q,
+            test: {
+              connect: { id: res.id },
+            },
+          },
+        });
+      }),
+    );
+  }
+
+  public async new(param: NewTestParam) {
+    if (param.type === "MCQ") return this.createNewMcqTest(param);
+    else if (param.type === "WRITTEN") return this.createNewWrittenTest(param);
+  }
+
+  public async getManyCommon() {
+    const { written, mcq, typing } = await this.getMany();
+
+    let tests: CommonTestProps[] = [
+      ...written.map((w) => {
+        return {
+          id: w.id,
+          type: "WRITTEN",
+          createrId: w.createrId,
+          title: w.title,
+          subject: w.subject,
+          createdAt: w.createdAt,
+          releaseAt: w.releaseAt,
+          withholdAt: w.withholdAt,
+          creater: w.creater,
+        } satisfies CommonTestProps;
+      }),
+      ...mcq.map((m) => {
+        return {
+          id: m.id,
+          type: "MCQ",
+          createrId: m.createrId,
+          title: m.title,
+          subject: m.subject,
+          createdAt: m.createdAt,
+          releaseAt: m.releaseAt,
+          withholdAt: m.withholdAt,
+          creater: m.creater,
+        } satisfies CommonTestProps;
+      }),
+      ...typing.map((t) => {
+        return {
+          id: t.id,
+          type: "TYPING",
+          createrId: t.createrId,
+          title: t.title,
+          subject: t.subject,
+          createdAt: t.createdAt,
+          releaseAt: t.releaseAt,
+          withholdAt: t.withholdAt,
+          creater: t.creater,
+        } satisfies CommonTestProps;
+      }),
+    ];
+
+    return tests;
   }
 
   public async getMany() {
@@ -53,19 +160,35 @@ export class TestOperations {
       include: {
         questions: true,
         creater: true,
-        answers: { include: { user: true } },
+        answers: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 
     const writtenTest = await this.writtenTest.findMany({
       include: {
         questions: true,
-        creater: true, // TODO: add answers to the model and include it here
-        answers: true,
+        creater: true,
+        answers: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 
-    return { mcq: mcqTest, written: writtenTest } as const;
+    const typingTest = await this.typingTest.findMany({
+      include: {
+        questions: true,
+        creater: true,
+        TypeingAnswer: true,
+      },
+    });
+
+    return { mcq: mcqTest, written: writtenTest, typing: typingTest } as const;
   }
 
   public async get(testId: string) {
@@ -82,10 +205,29 @@ export class TestOperations {
 
     const writtenTest = await this.writtenTest.findFirst({
       where: { id: testId },
-      include: { creater: true, questions: true, answers: true },
+      include: {
+        creater: true,
+        questions: true,
+        answers: { include: { user: true } },
+      },
     });
 
     if (writtenTest) return { ...writtenTest, type: "WRITTEN" } as const;
+
+    const typingTest = await this.typingTest.findFirst({
+      where: { id: testId },
+      include: {
+        creater: true,
+        questions: true,
+        TypeingAnswer: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    if (typingTest) return { ...typingTest, type: "TYPING" } as const;
 
     return null;
   }

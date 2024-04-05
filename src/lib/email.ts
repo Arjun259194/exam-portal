@@ -34,6 +34,7 @@ export default class MailService<Config extends { user: string; pass: string }> 
             score: config.score,
             username: config.username,
             testTitle: config.testName,
+            totalMarks: config.totalMarks
           }),
         });
         break;
@@ -125,8 +126,8 @@ export default class MailService<Config extends { user: string; pass: string }> 
         <p><strong>Time of Sending (ISO Format):</strong> ${isoFormat}</p>
         <p><strong>Time of Sending (Formatted):</strong> ${formatted}</p>
         <p><strong>Additional Messages:</strong> ${messages.map(
-          (message) => `<p>${message}</p>`,
-        )}</p>
+      (message) => `<p>${message}</p>`,
+    )}</p>
         
 
         <p style="text-align: center; color: #666; margin-top: 20px;">Feel free to modify and use this template for testing your Nodemailer setup.</p>
@@ -139,9 +140,10 @@ export default class MailService<Config extends { user: string; pass: string }> 
   }
 
   public templeTestResultMailHTML(option: {
-    score: boolean[];
+    score: boolean[] | number[];
     username: string;
     testTitle: string;
+    totalMarks: number
   }) {
     return `<!DOCTYPE html>
 <html>
@@ -187,6 +189,8 @@ export default class MailService<Config extends { user: string; pass: string }> 
     <p>Dear ${option.username},</p>
     <p>Here are your results from your recent test: ${option.testTitle}</p>
 
+    <p>Your total earned marks are ${option.totalMarks}</p>
+
     <table>
       <thead>
         <tr>
@@ -196,13 +200,13 @@ export default class MailService<Config extends { user: string; pass: string }> 
       </thead>
       <tbody>
         ${option.score
-          .map(
-            (s, i) => `<tr>
+        .map(
+          (s, i) => `<tr>
             <td>${i + 1}</td>
             <td>${s}</td>
           </tr>`,
-          )
-          .join("")}
+        )
+        .join("")}
       </tbody>
     </table>
 

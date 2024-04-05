@@ -49,9 +49,9 @@ export const SideBar = ({ email, type, username }: Props) => {
           {type === "ADMIN" && (
             <ListItem Icon={Lock} path="/admin" text="admin" />
           )}
-          {type !== "ADMIN" && (
-            <ListItem Icon={UserRound} path="/user" text="Profile" />
-          )}
+          {/* {type !== "ADMIN" && ( */}
+          {/*   <ListItem Icon={UserRound} path="/user" text="Profile" /> */}
+          {/* )} */}
         </ul>
       </div>
 

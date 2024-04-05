@@ -1,23 +1,9 @@
-import NewMcqForm from "@/components/test/NewMcqForm";
-import db from "@/database";
-import { JWTToken } from "@/lib/jwt";
-import { cookies } from "next/headers"
+import NewMcqForm from "@/components/test/mcq/NewMcqForm";
+import { getSessionUser } from "@/utils";
 import { redirect } from "next/navigation";
 
 async function page() {
-  const authCookie = cookies().get("auth");
-  if (!authCookie) redirect("/auth/login");
-
-  const userID = JWTToken.valid(authCookie.value)
-  if (!userID) redirect('/message')
-
-  const user = await db.user.findById(userID).catch(err => {
-    console.error("Error while fetchin user", err)
-    redirect("/message")
-  })
-
-  if (!user) redirect("/message")
-
+  const user = await getSessionUser()
   if (user.type == "STUDENT") redirect("/")
 
   return (

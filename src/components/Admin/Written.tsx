@@ -17,9 +17,9 @@ export default function Written({ tests }: Props) {
         </span>
       </div>
     ) : (
-      tests.map((wt) => {
+      tests.map((wt, i) => {
         return (
-          <div className="flex comic-box-black rounded-md p-1 border-2 border-black items-center justify-between ">
+          <div key={i} className="flex comic-box-black rounded-md p-1 border-2 border-black items-center justify-between ">
             <div>
               <p className="capitalize text-lg">
                 {wt.title}

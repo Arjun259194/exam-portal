@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import Button from "../UI/Button";
+import Button from "../../UI/Button";
 import toast from "react-hot-toast";
 import { TestMcq } from "@/types";
 

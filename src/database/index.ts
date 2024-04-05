@@ -16,6 +16,8 @@ class Database {
       prisma.mCQQuestion,
       prisma.writtenTest,
       prisma.writtenQuenstion,
+      prisma.typingTest,
+      prisma.typingQuestions
     );
   }
 

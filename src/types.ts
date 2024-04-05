@@ -1,6 +1,10 @@
 import { User } from "@prisma/client";
 import db from "./database";
-import { Question } from "./utils/classes";
+import { MCQQuesion } from "./utils/classes";
+
+export type Common<A, B> = {
+  [P in keyof A & keyof B]: A[P] | B[P];
+}
 
 export type UserRole = Prettify<User["type"]>;
 
@@ -14,7 +18,7 @@ export type Prettify<T> = {
 
 export type ClassName = string | undefined;
 
-export type NewMcqTest = Array<Question>;
+export type NewMcqTest = Array<MCQQuesion>;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -31,10 +35,10 @@ type IntersectionOfFunctionsToType<F> = F extends {
 }
   ? [A, B, C]
   : F extends { (a: infer A): void; (b: infer B): void }
-    ? [A, B]
-    : F extends { (a: infer A): void }
-      ? [A]
-      : never;
+  ? [A, B]
+  : F extends { (a: infer A): void }
+  ? [A]
+  : never;
 
 type SplitType<T> = IntersectionOfFunctionsToType<
   UnionToIntersection<UnionToFunctions<T>>
@@ -45,47 +49,47 @@ export type Tests = NonNullable<Awaited<ReturnType<typeof db.test.getMany>>>;
 
 export type TestMcq = SplitType<Test>[0];
 export type TestWritten = SplitType<Test>[1];
+export type TestTyping = SplitType<Test>[2];
 
-export type WrittenTest = Awaited<
-  ReturnType<typeof db.test.getMany>
->["written"][number];
+export type CommonTestProps = Omit<Common<Common<TestMcq, TestWritten>, TestTyping>, "questions">
 
 // email
 interface DefaultMailConfig {
-   username: string;
-   email: string;
+  username: string;
+  email: string;
 }
 
 interface VerificationMailConfig extends DefaultMailConfig {
-   type: "Verify";
-   url: string;
+  type: "Verify";
+  url: string;
 }
 
-interface  NotificationMailConfig extends DefaultMailConfig  {
-   type: "Notification";
-   message: string[];
+interface NotificationMailConfig extends DefaultMailConfig {
+  type: "Notification";
+  message: string[];
 }
 
 interface DebugMailConfig extends DefaultMailConfig {
-   type: "Debug";
-   message: string[];
+  type: "Debug";
+  message: string[];
 }
 
-interface  TeacherRequestAcceptedMailConfig extends DefaultMailConfig {
-   type: "TeacherRequestAccepted";
-   url: string;
+interface TeacherRequestAcceptedMailConfig extends DefaultMailConfig {
+  type: "TeacherRequestAccepted";
+  url: string;
 };
 
-interface ResultMailConfig extends DefaultMailConfig  {
-   type: "Result";
-   score: boolean[];
-   testName: string;
+interface ResultMailConfig extends DefaultMailConfig {
+  type: "Result";
+  score: boolean[] | number[];
+  testName: string;
+  totalMarks: number
 }
 
 export type MailConfig =
-   | VerificationMailConfig
-   | NotificationMailConfig
-   | DebugMailConfig
-   | TeacherRequestAcceptedMailConfig
-   | ResultMailConfig;
+  | VerificationMailConfig
+  | NotificationMailConfig
+  | DebugMailConfig
+  | TeacherRequestAcceptedMailConfig
+  | ResultMailConfig;
 

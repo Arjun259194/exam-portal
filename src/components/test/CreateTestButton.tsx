@@ -6,7 +6,9 @@ import { Fragment } from 'react'
 
 export default function CreateTestButton() {
   return <Popover className="relative">
-    <Popover.Button className={`bg-green-600 px-4 py-1 text-lg capitalize rounded-xl text-white`}>Solutions</Popover.Button>
+    <Popover.Button className={`bg-green-600 font-semibold px-4 py-1 text-lg capitalize rounded-xl text-white`}>
+      Create
+    </Popover.Button>
 
     <Transition
       as={Fragment}

@@ -1,8 +1,8 @@
-import { Question } from "@/utils/classes";
+import { MCQQuesion } from "@/utils/classes";
 import { Trash2 } from "lucide-react";
 import React, { FC } from "react";
 
-type Props = Question & {
+type Props = MCQQuesion & {
   onCancel: () => void;
 };
 

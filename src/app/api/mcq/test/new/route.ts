@@ -14,15 +14,24 @@ export async function POST(request: NextRequest) {
   const json = await request.json();
   const parsedObj = newMcqTestReq.safeParse(json);
   if (!parsedObj.success) {
+    console.log("Faield to parse the request body:", json);
     return NextResponse.json({}, { status: 400 });
   }
 
   const { data } = parsedObj;
 
-  const { questions, title, subject } = data;
+  const { questions, title, subject, releaseDate, withholdDate } = data;
 
   try {
-    await db.test.new({ userID, questions, title, subject });
+    await db.test.new({
+      type: "MCQ",
+      userID,
+      questions,
+      title,
+      subject,
+      releaseAt: releaseDate,
+      withholdAt: withholdDate,
+    });
   } catch (e) {
     console.error(e);
     return NextResponse.json({}, { status: 500 });

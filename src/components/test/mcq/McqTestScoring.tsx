@@ -1,15 +1,15 @@
 "use client";
 import { TestMcq } from "@/types";
-import { MCQAnswer } from "@prisma/client";
+import { MCQAnswer, User } from "@prisma/client";
 import { Check, X } from "lucide-react";
 import { useState } from "react";
-import Button from "../UI/Button";
-import check from "@/app/(auth)/(dashboard)/test/inspect/[id]/action";
+import Button from "../../UI/Button";
 import { toast } from "react-hot-toast";
+import { checkMcqTest } from "@/app/(auth)/(dashboard)/test/info/[id]/action";
 
 type Props = {
   test: TestMcq;
-  answer: MCQAnswer;
+  answer: MCQAnswer
 };
 
 function newArr(n: number): boolean[] {
@@ -51,7 +51,6 @@ const McqTestScoring = ({ test, answer }: Props) => {
             <div className="flex items-center justify-center space-y-1 flex-col">
               <p className="text-lg">Quesion: {i + 1}</p>
               <button
-                h-2
                 onClick={() => {
                   setScore((prev) => {
                     let newScore = [...prev];
@@ -77,7 +76,7 @@ const McqTestScoring = ({ test, answer }: Props) => {
           f.set("score", JSON.stringify(score));
           f.set('userID', answer.userId)
           //TODO: mark answer as checked
-          const p = check(f);
+          const p = checkMcqTest(f);
           await toast.promise(p, {
             loading: "Processing...",
             success: "Test result sent to student",

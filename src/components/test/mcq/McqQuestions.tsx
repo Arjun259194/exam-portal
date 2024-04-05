@@ -1,10 +1,10 @@
-import { Question } from "@/utils/classes";
+import { MCQQuesion } from "@/utils/classes";
 import { McqQuestion } from "./McqQuestion";
 import { AlertOctagon } from "lucide-react";
 
 interface Props {
-  questions: Question[];
-  update: (arg1: Question[]) => void;
+  questions: MCQQuesion[];
+  update: (arg1: MCQQuesion[]) => void;
 }
 
 const McqQuestions: React.FC<Props> = ({ questions, update }) => (
