@@ -1,6 +1,7 @@
 import { CommonTestProps } from "@/types";
 import { MCQQuesion, TypingQuesion, WrittenQuestion } from "@/utils/classes";
 import { PrismaClient } from "@prisma/client";
+import { prisma } from ".";
 
 type DBWrittenQuestion = PrismaClient["writtenQuenstion"];
 type DBWriitenTest = PrismaClient["writtenTest"];
@@ -233,14 +234,27 @@ export class TestOperations {
   }
 
   public delete = async (id: string) => {
-    Promise.all([
-      await this.mcqTest.delete({
+    await prisma.$transaction([
+      prisma.mCQTest.delete({
         where: { id: id },
-        include: { answers: true, questions: true },
+        include: {
+          answers: true,
+          questions: true,
+        },
       }),
-      await this.writtenTest.delete({
+      prisma.writtenTest.delete({
         where: { id: id },
-        include: { answers: true, questions: true },
+        include: {
+          answers: true,
+          questions: true,
+        },
+      }),
+      prisma.typingTest.delete({
+        where: { id: id },
+        include: {
+          TypeingAnswer: true,
+          questions: true,
+        },
       }),
     ]);
   };

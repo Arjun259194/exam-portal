@@ -48,7 +48,7 @@ model AttendedTest {
 model MCQTest {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   createrId String @db.ObjectId
-  creater   User   @relation(fields: [createrId], references: [id])
+  creater   User   @relation(fields: [createrId], references: [id], onDelete: Cascade)
   title     String
   subject   String
 
@@ -63,7 +63,7 @@ model MCQTest {
 model WrittenTest {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   createrId String @map("userId") @db.ObjectId
-  creater   User   @relation(fields: [createrId], references: [id])
+  creater   User   @relation(fields: [createrId], references: [id], onDelete: Cascade)
   title     String
   subject   String
 
@@ -81,7 +81,7 @@ model TypingTest {
   subject String
 
   createrId String @db.ObjectId
-  creater   User   @relation(fields: [createrId], references: [id])
+  creater   User   @relation(fields: [createrId], references: [id], onDelete: Cascade)
 
   questions     TypingQuestions[]
   TypeingAnswer TypeingAnswer[]
@@ -94,8 +94,8 @@ model TypingTest {
 model TypeingAnswer {
   id      String     @id @default(auto()) @map("_id") @db.ObjectId
   answers String[]
-  user    User       @relation(fields: [userId], references: [id])
-  test    TypingTest @relation(fields: [testID], references: [id])
+  user    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  test    TypingTest @relation(fields: [testID], references: [id], onDelete: Cascade)
   testID  String     @db.ObjectId
   userId  String     @db.ObjectId
   checked Boolean    @default(false)
@@ -104,10 +104,10 @@ model TypeingAnswer {
 model WrittenAnswer {
   id            String      @id @default(auto()) @map("_id") @db.ObjectId
   path          String      @unique
-  WrittenTest   WrittenTest @relation(fields: [writtenTestId], references: [id])
+  WrittenTest   WrittenTest @relation(fields: [writtenTestId], references: [id], onDelete: Cascade)
   writtenTestId String      @db.ObjectId
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @db.ObjectId
 
   checked Boolean @default(false)
@@ -119,10 +119,10 @@ model MCQAnswer {
   checked Boolean  @default(false)
 
   testId String  @db.ObjectId
-  test   MCQTest @relation(fields: [testId], references: [id])
+  test   MCQTest @relation(fields: [testId], references: [id], onDelete: Cascade)
 
   userId String @db.ObjectId
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model WrittenQuenstion {
@@ -130,12 +130,12 @@ model WrittenQuenstion {
   question String
   marks    Int
   testId   String      @db.ObjectId
-  test     WrittenTest @relation(fields: [testId], references: [id])
+  test     WrittenTest @relation(fields: [testId], references: [id], onDelete: Cascade)
 }
 
 model TypingQuestions {
   id       String      @id @default(auto()) @map("_id") @db.ObjectId
-  test     TypingTest? @relation(fields: [testID], references: [id])
+  test     TypingTest? @relation(fields: [testID], references: [id], onDelete: Cascade)
   testID   String?     @db.ObjectId
   question String
   marks    Int
@@ -148,7 +148,7 @@ model MCQQuestion {
   choices       String[]
   correctAnswer String
 
-  MCQTest MCQTest @relation(fields: [testId], references: [id])
+  MCQTest MCQTest @relation(fields: [testId], references: [id], onDelete: Cascade)
   testId  String  @db.ObjectId
 }
 

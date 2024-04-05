@@ -74,7 +74,12 @@ export default function User({ usersState }: Props) {
                   errWrapper(async () => {
                     const f = new FormData();
                     f.set("id", u.id);
-                    await removeUser(f);
+                    const p = removeUser(f);
+                    toast.promise(p, {
+                      loading: "Processing...",
+                      success: "Request rejected",
+                      error: "Something went wrong"
+                    })
                   });
                 }}
                 className=""

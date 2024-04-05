@@ -10,6 +10,7 @@ interface Props {
 }
 export default function Mcq({ tests }: Props) {
   return <div className="h-full p-2 space-y-3 overflow-y-auto">
+    <h2>MCQ:</h2>
     {tests.length <= 0 ? (
       <div className="flex items-center justify-between h-full">
         <span className="mx-auto font-semibold text-lg p-10">

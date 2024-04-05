@@ -158,7 +158,7 @@ const page = async ({ params: { id } }: Props) => {
             </ul>
           </div>
           <div className="w-ful flex items-center justify-center">
-            <WrittenAttemptForm testId={test.id} action={createWrittenTestAnswer} />
+            <WrittenAttemptForm test={test} action={createWrittenTestAnswer} />
           </div>
         </>
       )}

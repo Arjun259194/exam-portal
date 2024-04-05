@@ -1,16 +1,18 @@
-'use client'
 
+'use client'
 import { Tests } from "@/types";
 import { Trash } from "lucide-react";
 import Tag from "../UI/Tag";
+import toast from "react-hot-toast";
+import { removeTest } from "@/app/(auth)/admin/action";
 
 interface Props {
-  tests: Tests['written']
+  tests: Tests['typing']
 }
 
-export default function Written({ tests }: Props) {
+export default function Typing({ tests }: Props) {
   return <div className="h-full p-2 space-y-3 overflow-y-auto">
-    <h2>Written:</h2>
+    <h2>Typing:</h2>
     {tests.length <= 0 ? (
       <div className="flex items-center justify-between h-full">
         <span className="mx-auto font-semibold text-lg p-10">
@@ -18,9 +20,9 @@ export default function Written({ tests }: Props) {
         </span>
       </div>
     ) : (
-      tests.map((wt, i) => {
+      tests.map((wt) => {
         return (
-          <div key={i} className="flex comic-box-black rounded-md p-1 border-2 border-black items-center justify-between ">
+          <div className="flex comic-box-black rounded-md p-1 border-2 border-black items-center justify-between ">
             <div>
               <p className="capitalize text-lg">
                 {wt.title}
@@ -31,7 +33,16 @@ export default function Written({ tests }: Props) {
                 {wt.creater.username}
               </p>
             </div>
-            <button><Trash className="hover:text-red-600" /></button>
+            <button onClick={async () => {
+              const f = new FormData()
+              f.set('id', wt.id)
+              const p = removeTest(f)
+              toast.promise(p, {
+                loading: "Processing...",
+                success: "Test removed with all the attached information",
+                error: "Something went wrong"
+              })
+            }}><Trash className="hover:text-red-600" /></button>
           </div>
         );
       })

@@ -14,15 +14,29 @@ export class UserOperations {
 
   public delete = async (id: string) =>
     await this.user.delete({
-      where: { id }, include: {
+      where: { id },
+      include: {
         Otp: true,
-        MCQTest: true,
-        MCQAnswer: true,
-        WrittenTest: true,
-        WrittenAnswer: true
-      }
-    })
-
+        MCQTest: {
+          include: {
+            answers: true,
+            questions: true,
+          },
+        },
+        WrittenTest: {
+          include: {
+            answers: true,
+            questions: true,
+          },
+        },
+        TypingTest: {
+          include: {
+            TypeingAnswer: true,
+            questions: true,
+          },
+        },
+      },
+    });
 
   public new = async (newUser: UserConfig) =>
     await this.user.create({
@@ -32,13 +46,12 @@ export class UserOperations {
       },
     });
 
-  public all = async () => await this.user.findMany()
-
+  public all = async () => await this.user.findMany();
 
   public findById = async (id: string) =>
     await this.user.findFirst({ where: { id } });
 
   public findByEmail = async (email: string) => {
     return await this.user.findFirst({ where: { email } });
-  }
+  };
 }

@@ -2,6 +2,7 @@ import { Tests } from "@/types";
 import { File } from "lucide-react";
 import Mcq from "./Mcq";
 import Written from "./Written";
+import Typing from "./Typing";
 
 interface Props {
   testsState: PromiseSettledResult<Tests>;
@@ -29,9 +30,10 @@ export default function Tests({ testsState }: Props) {
           <p className="text-center text-lg">Not available</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-5">
+        <div className="grid grid-cols-3 gap-5">
           <Written tests={testsState.value.written} />
           <Mcq tests={testsState.value.mcq} />
+          <Typing tests={testsState.value.typing} />
         </div>
       )}
     </div>

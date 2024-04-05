@@ -86,10 +86,5 @@ export async function removeUser(formdata: FormData) {
 export async function removeTest(formdata: FormData) {
   const id = formdata.get("id");
   if (!id) throw new Error("Id not found");
-  try {
-    await db.test.delete(id.toString());
-  } catch (error) {
-    console.error(error);
-    throw new Error("Something went wrong");
-  }
+  await db.test.delete(id.toString());
 }
