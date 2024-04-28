@@ -13,19 +13,13 @@ const LoginForm: FC<{ action: FnFormAction<void> }> = ({ action }) => {
       email: "",
       password: "",
    });
-   const [origin, setOrigin] = useState("");
 
    const getFormData = () => {
       const formdata = new FormData();
       formdata.set("email", state.email);
       formdata.set("password", state.password);
-      formdata.set("origin", origin);
       return formdata;
    };
-
-   useEffect(() => {
-      setOrigin(window.location.host);
-   }, []);
 
    return (
       <>
@@ -64,7 +58,6 @@ const LoginForm: FC<{ action: FnFormAction<void> }> = ({ action }) => {
                type="password"
                name="password"
             />
-            {/*<input type="hidden" name="origin" value={window.location.origin} /> */}
             <Button
                type="submit"
                disabled={loading}

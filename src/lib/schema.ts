@@ -36,7 +36,6 @@ export const newMcqTestReq = z.object({
 export const loginFormSchema = z.object({
   email: z.string().email(),
   password: z.string(),
-  origin: z.string(),
 });
 
 export const registerFormSchema = z.object({

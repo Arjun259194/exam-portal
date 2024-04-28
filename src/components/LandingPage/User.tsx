@@ -24,7 +24,7 @@ const Card: React.FC<CardProps> = ({ Icon, role, children, title }: CardProps) =
         variant="secondary"
         reverse={true}
       >
-        <Link href="/auth/login">Get Started as a {role}</Link>
+        <Link href="/dashboard">Get Started as a {role}</Link>
       </IconButton>
     </div>
   );

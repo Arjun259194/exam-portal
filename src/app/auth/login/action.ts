@@ -4,18 +4,20 @@ import MailService from "@/lib/email";
 import { PasswordHash } from "@/lib/hash";
 import { loginFormSchema } from "@/lib/schema";
 import { env } from "process";
+import { headers } from "next/headers";
 
 export default async function action(formData: FormData) {
    const parsedObj = loginFormSchema.safeParse({
       email: formData.get("email"),
       password: formData.get("password"),
-      origin: formData.get("origin"),
    });
 
    if (!parsedObj.success) throw new Error(parsedObj.error.message);
 
+   const origin = headers().get("Origin")
+
    const {
-      data: { email, password, origin },
+      data: { email, password },
    } = parsedObj;
 
    const foundUser = await db.user.findByEmail(email);
@@ -38,7 +40,7 @@ export default async function action(formData: FormData) {
       user: process.env.EMAIL_ADDRESS,
    });
 
-   const u = new URL("/api/auth/verify", origin);
+   const u = new URL("/api/auth/verify", origin!);
    u.searchParams.set("code", OTP.code.toString());
    u.searchParams.set("id", foundUser.id);
 
