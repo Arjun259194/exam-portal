@@ -99,8 +99,6 @@ export async function tCheck(formdata: FormData) {
    const resultStr = formdata.get("result");
    if (!resultStr) throw new Error("result not found");
 
-   console.log("result string:", resultStr);
-
    const result = JSON.parse(resultStr.toString().trim()) as number[];
 
    const mailer = new MailService({

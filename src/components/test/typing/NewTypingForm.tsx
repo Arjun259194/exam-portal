@@ -49,8 +49,7 @@ export default function NewTypingForm() {
 
     toast.promise(p, {
       loading: "Proceccing...",
-      error: (err) => {
-        console.log(err)
+      error: () => {
         return "Someting went wrong"
       },
       success: () => {

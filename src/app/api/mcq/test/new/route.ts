@@ -14,7 +14,6 @@ export async function POST(request: NextRequest) {
   const json = await request.json();
   const parsedObj = newMcqTestReq.safeParse(json);
   if (!parsedObj.success) {
-    console.log("Faield to parse the request body:", json);
     return NextResponse.json({}, { status: 400 });
   }
 
@@ -33,7 +32,6 @@ export async function POST(request: NextRequest) {
       withholdAt: withholdDate,
     });
   } catch (e) {
-    console.error(e);
     return NextResponse.json({}, { status: 500 });
   }
 

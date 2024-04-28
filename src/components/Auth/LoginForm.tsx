@@ -13,7 +13,7 @@ const LoginForm: FC<{ action: FnFormAction<void> }> = ({ action }) => {
       email: "",
       password: "",
    });
-   const [origin, setOrigin] = useState('');
+   const [origin, setOrigin] = useState("");
 
    const getFormData = () => {
       const formdata = new FormData();
@@ -24,8 +24,8 @@ const LoginForm: FC<{ action: FnFormAction<void> }> = ({ action }) => {
    };
 
    useEffect(() => {
-      setOrigin(window.location.host)
-   }, [])
+      setOrigin(window.location.host);
+   }, []);
 
    return (
       <>

@@ -9,7 +9,6 @@ export async function accept(formdata: FormData) {
   try {
     const id = formdata.get("id");
     const origin = formdata.get("origin") as string;
-    console.log("origin: " + origin);
     if (!id) throw new Error("Something went wrong");
     const adminReq = await prisma.teacherRequest.findFirst({
       where: { id: id.toString() },
@@ -72,9 +71,6 @@ export async function reject(formdata: FormData) {
 export async function removeUser(formdata: FormData) {
   const id = formdata.get("id");
   if (!id) throw new Error("No id provided");
-
-  console.log("function called");
-  console.log("id:", id.toString());
 
   await prisma.otp.deleteMany({ where: { userId: id.toString() } });
   await db.user.delete(id.toString());
