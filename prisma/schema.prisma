@@ -49,7 +49,7 @@ model AttendedTest {
 model MCQTest {
    id        String @id @default(auto()) @map("_id") @db.ObjectId
    createrId String @db.ObjectId
-   creater   User?  @relation(fields: [createrId], references: [id])
+   creater   User  @relation(fields: [createrId], references: [id])
    title     String
    subject   String
 
@@ -64,7 +64,7 @@ model MCQTest {
 model WrittenTest {
    id        String @id @default(auto()) @map("_id") @db.ObjectId
    createrId String @map("userId") @db.ObjectId
-   creater   User?  @relation(fields: [createrId], references: [id])
+   creater   User  @relation(fields: [createrId], references: [id])
    title     String
    subject   String
 
@@ -82,7 +82,7 @@ model TypingTest {
    subject String
 
    createrId String @db.ObjectId
-   creater   User?  @relation(fields: [createrId], references: [id])
+   creater   User  @relation(fields: [createrId], references: [id])
 
    questions     TypingQuestions[]
    TypeingAnswer TypeingAnswer[]
@@ -93,22 +93,22 @@ model TypingTest {
 }
 
 model TypeingAnswer {
-   id      String     @id @default(auto()) @map("_id") @db.ObjectId
+   id      String      @id @default(auto()) @map("_id") @db.ObjectId
    answers String[]
-   user    User?      @relation(fields: [userId], references: [id])
-   test    TypingTest? @relation(fields: [testID], references: [id])
-   testID  String     @db.ObjectId
-   userId  String?    @db.ObjectId
-   checked Boolean    @default(false)
+   user    User       @relation(fields: [userId], references: [id])
+   test    TypingTest @relation(fields: [testID], references: [id])
+   testID  String      @db.ObjectId
+   userId  String     @db.ObjectId
+   checked Boolean     @default(false)
 }
 
 model WrittenAnswer {
-   id            String      @id @default(auto()) @map("_id") @db.ObjectId
-   path          String      @unique
-   WrittenTest   WrittenTest? @relation(fields: [writtenTestId], references: [id])
-   writtenTestId String      @db.ObjectId
+   id            String       @id @default(auto()) @map("_id") @db.ObjectId
+   path          String       @unique
+   WrittenTest   WrittenTest @relation(fields: [writtenTestId], references: [id])
+   writtenTestId String       @db.ObjectId
 
-   user   User?  @relation(fields: [userId], references: [id])
+   user   User  @relation(fields: [userId], references: [id])
    userId String @db.ObjectId
 
    checked Boolean @default(false)
@@ -119,25 +119,25 @@ model MCQAnswer {
    answers String[]
    checked Boolean  @default(false)
 
-   testId String  @db.ObjectId
-   test   MCQTest? @relation(fields: [testId], references: [id])
+   testId String   @db.ObjectId
+   test   MCQTest @relation(fields: [testId], references: [id])
 
    userId String @db.ObjectId
-   user   User?  @relation(fields: [userId], references: [id])
+   user   User  @relation(fields: [userId], references: [id])
 }
 
 model WrittenQuenstion {
-   id       String      @id @default(auto()) @map("_id") @db.ObjectId
+   id       String       @id @default(auto()) @map("_id") @db.ObjectId
    question String
    marks    Int
-   testId   String      @db.ObjectId
-   test     WrittenTest? @relation(fields: [testId], references: [id])
+   testId   String       @db.ObjectId
+   test     WrittenTest @relation(fields: [testId], references: [id])
 }
 
 model TypingQuestions {
-   id       String      @id @default(auto()) @map("_id") @db.ObjectId
-   test     TypingTest? @relation(fields: [testID], references: [id])
-   testID   String?     @db.ObjectId
+   id       String     @id @default(auto()) @map("_id") @db.ObjectId
+   test     TypingTest @relation(fields: [testID], references: [id])
+   testID   String    @db.ObjectId
    question String
    marks    Int
 }
@@ -149,14 +149,14 @@ model MCQQuestion {
    choices       String[]
    correctAnswer String
 
-   MCQTest MCQTest? @relation(fields: [testId], references: [id])
-   testId  String  @db.ObjectId
+   MCQTest MCQTest @relation(fields: [testId], references: [id])
+   testId  String   @db.ObjectId
 }
 
 model Result {
    id     String @id @default(auto()) @map("_id") @db.ObjectId
    testId String @db.ObjectId
-   user   User?  @relation(fields: [userId], references: [id])
+   user   User  @relation(fields: [userId], references: [id])
    userId String @db.ObjectId
 
    totalMarks       Int
@@ -166,7 +166,7 @@ model Result {
 
 model Otp {
    id     String  @id @default(auto()) @map("_id") @db.ObjectId
-   User   User?   @relation(fields: [userId], references: [id])
+   User   User   @relation(fields: [userId], references: [id])
    code   String
-   userId String? @db.ObjectId
+   userId String @db.ObjectId
 }
