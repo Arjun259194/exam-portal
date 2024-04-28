@@ -15,7 +15,7 @@ export class UserOperations {
     public delete = async (id: string) =>
         await this.user.delete({
             where: { id },
-            include: {
+            select: {
                 Otp: true,
                 MCQTest: {
                     include: {

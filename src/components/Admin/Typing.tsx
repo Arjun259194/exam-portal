@@ -33,16 +33,6 @@ export default function Typing({ tests }: Props) {
                 {wt.creater.username}
               </p>
             </div>
-            <button onClick={async () => {
-              const f = new FormData()
-              f.set('id', wt.id)
-              const p = removeTest(f)
-              toast.promise(p, {
-                loading: "Processing...",
-                success: "Test removed with all the attached information",
-                error: "Something went wrong"
-              })
-            }}><Trash className="hover:text-red-600" /></button>
           </div>
         );
       })

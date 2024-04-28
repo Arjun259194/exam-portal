@@ -14,7 +14,7 @@ export default function Mcq({ tests }: Props) {
     {tests.length <= 0 ? (
       <div className="flex items-center justify-between h-full">
         <span className="mx-auto font-semibold text-lg p-10">
-          No written test found
+          No mcq test found
         </span>
       </div>
     ) : (
@@ -31,16 +31,6 @@ export default function Mcq({ tests }: Props) {
                 {wt.creater.username}
               </p>
             </div>
-            <button onClick={async () => {
-              const f = new FormData()
-              f.set('id', wt.id)
-              const p = removeTest(f)
-              toast.promise(p, {
-                loading: "Processing...",
-                success: "Test removed with all the attached information",
-                error: "Something went wrong"
-              })
-            }}><Trash className="hover:text-red-600" /></button>
           </div>
         );
       })
