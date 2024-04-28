@@ -2,159 +2,171 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+   provider = "mongodb"
+   url      = env("DATABASE_URL")
 }
 
 enum UserType {
-  TEACHER
-  STUDENT
-  ADMIN
+   TEACHER
+   STUDENT
+   ADMIN
 }
 
 model TeacherRequest {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  email    String @unique
-  username String
-  password String
+   id       String @id @default(auto()) @map("_id") @db.ObjectId
+   email    String @unique
+   username String
+   password String
 }
 
 model User {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  username String
-  email    String   @unique
-  password String
-  type     UserType
+   id       String   @id @default(auto()) @map("_id") @db.ObjectId
+   username String
+   email    String   @unique
+   password String
+   type     UserType
 
-  Otp           Otp[]
-  MCQTest       MCQTest[]
-  WrittenTest   WrittenTest[]
-  MCQAnswer     MCQAnswer[]
-  WrittenAnswer WrittenAnswer[]
-  TypingTest    TypingTest[]
-  TypeingAnswer TypeingAnswer[]
+   Otp           Otp[]
+   MCQTest       MCQTest[]
+   WrittenTest   WrittenTest[]
+   MCQAnswer     MCQAnswer[]
+   WrittenAnswer WrittenAnswer[]
+   TypingTest    TypingTest[]
+   TypeingAnswer TypeingAnswer[]
+   Result        Result[]
 }
 
 model AttendedTest {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  userID String
-  testID String
+   id     String @id @default(auto()) @map("_id") @db.ObjectId
+   userID String
+   testID String
 }
 
 model MCQTest {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  createrId String @db.ObjectId
-  creater   User   @relation(fields: [createrId], references: [id], onDelete: Cascade)
-  title     String
-  subject   String
+   id        String @id @default(auto()) @map("_id") @db.ObjectId
+   createrId String @db.ObjectId
+   creater   User   @relation(fields: [createrId], references: [id])
+   title     String
+   subject   String
 
-  questions MCQQuestion[]
-  answers   MCQAnswer[]
+   questions MCQQuestion[]
+   answers   MCQAnswer[]
 
-  createdAt  DateTime @default(now())
-  releaseAt  DateTime
-  withholdAt DateTime
+   createdAt  DateTime @default(now())
+   releaseAt  DateTime
+   withholdAt DateTime
 }
 
 model WrittenTest {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  createrId String @map("userId") @db.ObjectId
-  creater   User   @relation(fields: [createrId], references: [id], onDelete: Cascade)
-  title     String
-  subject   String
+   id        String @id @default(auto()) @map("_id") @db.ObjectId
+   createrId String @map("userId") @db.ObjectId
+   creater   User   @relation(fields: [createrId], references: [id])
+   title     String
+   subject   String
 
-  questions WrittenQuenstion[]
-  answers   WrittenAnswer[]
+   questions WrittenQuenstion[]
+   answers   WrittenAnswer[]
 
-  createdAt  DateTime @default(now())
-  releaseAt  DateTime
-  withholdAt DateTime
+   createdAt  DateTime @default(now())
+   releaseAt  DateTime
+   withholdAt DateTime
 }
 
 model TypingTest {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  title   String
-  subject String
+   id      String @id @default(auto()) @map("_id") @db.ObjectId
+   title   String
+   subject String
 
-  createrId String @db.ObjectId
-  creater   User   @relation(fields: [createrId], references: [id], onDelete: Cascade)
+   createrId String @db.ObjectId
+   creater   User   @relation(fields: [createrId], references: [id])
 
-  questions     TypingQuestions[]
-  TypeingAnswer TypeingAnswer[]
+   questions     TypingQuestions[]
+   TypeingAnswer TypeingAnswer[]
 
-  createdAt  DateTime @default(now())
-  releaseAt  DateTime
-  withholdAt DateTime
+   createdAt  DateTime @default(now())
+   releaseAt  DateTime
+   withholdAt DateTime
 }
 
 model TypeingAnswer {
-  id      String     @id @default(auto()) @map("_id") @db.ObjectId
-  answers String[]
-  user    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  test    TypingTest @relation(fields: [testID], references: [id], onDelete: Cascade)
-  testID  String     @db.ObjectId
-  userId  String     @db.ObjectId
-  checked Boolean    @default(false)
+   id      String     @id @default(auto()) @map("_id") @db.ObjectId
+   answers String[]
+   user    User       @relation(fields: [userId], references: [id])
+   test    TypingTest @relation(fields: [testID], references: [id])
+   testID  String     @db.ObjectId
+   userId  String     @db.ObjectId
+   checked Boolean    @default(false)
 }
 
 model WrittenAnswer {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  path          String      @unique
-  WrittenTest   WrittenTest @relation(fields: [writtenTestId], references: [id], onDelete: Cascade)
-  writtenTestId String      @db.ObjectId
+   id            String      @id @default(auto()) @map("_id") @db.ObjectId
+   path          String      @unique
+   WrittenTest   WrittenTest @relation(fields: [writtenTestId], references: [id])
+   writtenTestId String      @db.ObjectId
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @db.ObjectId
+   user   User   @relation(fields: [userId], references: [id])
+   userId String @db.ObjectId
 
-  checked Boolean @default(false)
+   checked Boolean @default(false)
 }
 
 model MCQAnswer {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  answers String[]
-  checked Boolean  @default(false)
+   id      String   @id @default(auto()) @map("_id") @db.ObjectId
+   answers String[]
+   checked Boolean  @default(false)
 
-  testId String  @db.ObjectId
-  test   MCQTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+   testId String  @db.ObjectId
+   test   MCQTest @relation(fields: [testId], references: [id])
 
-  userId String @db.ObjectId
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+   userId String @db.ObjectId
+   user   User   @relation(fields: [userId], references: [id])
 }
 
 model WrittenQuenstion {
-  id       String      @id @default(auto()) @map("_id") @db.ObjectId
-  question String
-  marks    Int
-  testId   String      @db.ObjectId
-  test     WrittenTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+   id       String      @id @default(auto()) @map("_id") @db.ObjectId
+   question String
+   marks    Int
+   testId   String      @db.ObjectId
+   test     WrittenTest @relation(fields: [testId], references: [id])
 }
 
 model TypingQuestions {
-  id       String      @id @default(auto()) @map("_id") @db.ObjectId
-  test     TypingTest? @relation(fields: [testID], references: [id], onDelete: Cascade)
-  testID   String?     @db.ObjectId
-  question String
-  marks    Int
+   id       String      @id @default(auto()) @map("_id") @db.ObjectId
+   test     TypingTest? @relation(fields: [testID], references: [id])
+   testID   String?     @db.ObjectId
+   question String
+   marks    Int
 }
 
 model MCQQuestion {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  question      String
-  marks         Int
-  choices       String[]
-  correctAnswer String
+   id            String   @id @default(auto()) @map("_id") @db.ObjectId
+   question      String
+   marks         Int
+   choices       String[]
+   correctAnswer String
 
-  MCQTest MCQTest @relation(fields: [testId], references: [id], onDelete: Cascade)
-  testId  String  @db.ObjectId
+   MCQTest MCQTest @relation(fields: [testId], references: [id])
+   testId  String  @db.ObjectId
+}
+
+model Result {
+   id     String @id @default(auto()) @map("_id") @db.ObjectId
+   testId String @db.ObjectId
+   user   User   @relation(fields: [userId], references: [id])
+   userId String @db.ObjectId
+
+   totalMarks       Int
+   gainedMarks      Int
+   marksPerQuestion Int[]
 }
 
 model Otp {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  User   User   @relation(fields: [userId], references: [id])
-  code   String
-  userId String @db.ObjectId
+   id     String @id @default(auto()) @map("_id") @db.ObjectId
+   User   User   @relation(fields: [userId], references: [id])
+   code   String
+   userId String @db.ObjectId
 }

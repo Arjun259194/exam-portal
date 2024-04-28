@@ -13,6 +13,9 @@
 /.next/
 /out/
 
+# dev
+TODO.md
+
 # production
 /build
 

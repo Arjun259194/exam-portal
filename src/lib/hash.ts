@@ -9,6 +9,6 @@ export class PasswordHash {
     }
 
     static async check(data: string, encrypted: string) {
-        return await compare(data, encrypted)
+      return await compare(data, encrypted)
     }
 }

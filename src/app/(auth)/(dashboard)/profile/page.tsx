@@ -1,25 +1,27 @@
 "use server";
-import db from "@/database";
-import { getUserId } from "@/utils";
+import StudentProfile from "@/components/Profile/StudentProfile";
+import { getSessionUser } from "@/utils";
 import { redirect } from "next/navigation";
 
 async function page() {
-  const userID = getUserId();
-  if (!userID) redirect("/auth/login");
+   const user = await getSessionUser();
 
-  const user = await db.user.findById(userID);
+   if (user.type !== "STUDENT") redirect("/dashboard")
 
-  if (!user)
-    return (
-      <div>
-        <p>something went wrong, can't fetch user information</p>
+   return (
+      <div className="">
+         <section className="space-y-3 flex flex-col items-end w-full">
+            <div className="flex">
+               <span className="text-sm text-gray-500">As a {user.type}</span>
+               <h2 className="text-4xl font-semibold underline capitalize">
+                  {user.username}{" "}
+               </h2>
+            </div>
+            <p>{user.email}</p>
+         </section>
+         <StudentProfile user={user} />
       </div>
-    );
-
-  const { type, email, password, username } = user;
-
-  return <div className="">{/*TODO*/}</div>;
-  // create a profile page
+   );
 }
 
 export default page;

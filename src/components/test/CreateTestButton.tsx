@@ -25,7 +25,6 @@ export default function CreateTestButton() {
           <Link className="hover:bg-green-500 hover:text-white hover:font-semibold py-2 w-full text-start px-2" href="/test/written/new">Written</Link>
           <Link className="hover:bg-green-500 hover:text-white hover:font-semibold py-2 w-full text-start px-2" href="/test/typing/new">Typing</Link>
         </div>
-        {/* <img src="/solutions.jpg" alt="" /> */}
       </Popover.Panel>
     </Transition>
   </Popover>

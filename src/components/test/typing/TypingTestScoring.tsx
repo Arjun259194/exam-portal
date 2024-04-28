@@ -21,7 +21,7 @@ function newArr(n: number): number[] {
 }
 
 export default function TypingTestScoring(props: Props) {
-  const [result, setResult] = useState(newArr(props.test.questions.length));
+  const [result, setResult] = useState(newArr(props.test.questions.length - 1)); // chenge
 
   const getFormData = () => {
     const f = new FormData();

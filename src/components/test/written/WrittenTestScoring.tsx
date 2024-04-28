@@ -21,7 +21,7 @@ function newArr(n: number): number[] {
 }
 
 export default function WrittenTestScoring(props: Props) {
-  const [result, setResult] = useState(newArr(props.test.questions.length));
+  const [result, setResult] = useState(newArr(props.test.questions.length - 1));// change
 
   const getFormData = () => {
     const f = new FormData();

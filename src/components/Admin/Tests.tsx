@@ -20,7 +20,7 @@ export default function Tests({ testsState }: Props) {
         <span>
           {CONDITION
             ? `0`
-            : `${testsState.value.mcq.length + testsState.value.written.length}`}
+            : `${testsState.value.mcq.length + testsState.value.written.length + testsState.value.typing.length }`}
         </span>
       </div>
       <hr />

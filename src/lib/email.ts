@@ -2,7 +2,9 @@ import { MailConfig } from "@/types";
 import nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 
-export default class MailService<Config extends { user: string; pass: string }>  {
+export default class MailService<
+  Config extends { user: string; pass: string },
+> {
   private transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo>;
 
   constructor(config: Config) {
@@ -34,7 +36,7 @@ export default class MailService<Config extends { user: string; pass: string }> 
             score: config.score,
             username: config.username,
             testTitle: config.testName,
-            totalMarks: config.totalMarks
+            totalMarks: config.totalMarks,
           }),
         });
         break;
@@ -126,8 +128,8 @@ export default class MailService<Config extends { user: string; pass: string }> 
         <p><strong>Time of Sending (ISO Format):</strong> ${isoFormat}</p>
         <p><strong>Time of Sending (Formatted):</strong> ${formatted}</p>
         <p><strong>Additional Messages:</strong> ${messages.map(
-      (message) => `<p>${message}</p>`,
-    )}</p>
+          (message) => `<p>${message}</p>`,
+        )}</p>
         
 
         <p style="text-align: center; color: #666; margin-top: 20px;">Feel free to modify and use this template for testing your Nodemailer setup.</p>
@@ -140,10 +142,10 @@ export default class MailService<Config extends { user: string; pass: string }> 
   }
 
   public templeTestResultMailHTML(option: {
-    score: boolean[] | number[];
+    score: number[];
     username: string;
     testTitle: string;
-    totalMarks: number
+    totalMarks: number;
   }) {
     return `<!DOCTYPE html>
 <html>
@@ -200,13 +202,13 @@ export default class MailService<Config extends { user: string; pass: string }> 
       </thead>
       <tbody>
         ${option.score
-        .map(
-          (s, i) => `<tr>
+          .map(
+            (s, i) => `<tr>
             <td>${i + 1}</td>
             <td>${s}</td>
           </tr>`,
-        )
-        .join("")}
+          )
+          .join("")}
       </tbody>
     </table>
 
@@ -271,56 +273,76 @@ export default class MailService<Config extends { user: string; pass: string }> 
   }
 
   private verificationMailHTML(option: { username: string; url: string }) {
-    return `<!DOCTYPE html>
-<html>
-<head>
-  <title>Email Verification</title>
-  <style>
-    /* Style for the body */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-    }
-    /* Style for the email container */
-    .email-container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #ffffff;
-      border-radius: 5px;
-      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-    }
-    /* Style for the button */
-    .button {
-      display: inline-block;
-      font-size: 16px;
-      font-weight: bold;
-      padding: 10px 20px;
-      text-decoration: none;
-      color: #ffffff;
-      background-color: #007bff;
-      border-radius: 5px;
-    }
-    /* Style for the button hover effect */
-    .button:hover {
-      background-color: #0056b3;
-    }
-  </style>
-</head>
-<body>
-  <div class="email-container">
-    <p>Dear User,</p>
-    <p>Please click the button below to verify your email address:</p>
-    <button class="button">
-      <a href="${option.url}">Verify Email</a>
-    </button>
-    <p>If you are unable to click the button above, you can also <a href="${option.url}">click here</a> or copy/paste the following URL into your browser:</p>
-    <p>${option.url}</p>
-    <p>Thank you!</p>
-  </div>
-</body>
+    return `
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Varification EMAIL</title>
+    <style>
+      * {
+        font-family: Arial;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+      }
+
+      .para {
+        max-width: 80ch;
+      }
+
+      .button {
+        padding: 0.5rem 1rem;
+        font-size: 1.2rem;
+        border-radius: 1rem;
+        outline: none;
+        border: 2px solid lime;
+        background-color: lime;
+        color: white;
+        font-weight: bold;
+      }
+
+      .box {
+        padding: 2rem 3rem;
+        background-color: #e6eeff;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        border: 2px solid #add8e6;
+
+        border-radius: 1rem;
+      }
+
+      .box > * {
+        margin-top: 1rem;
+      }
+
+      .container .box {
+        width: 80%;
+        margin-inline: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="container">
+      <div class="box">
+        <h1>Varification</h1>
+        <p>Dear ${option.username},</p>
+        <p class="para">
+          This is a varification email from examify to verify you email before
+          logging in the system Please click the button below to verify your
+          email address
+        </p>
+        <div>
+          <a href="${option.url}">
+            <button class="button">Verify</button>
+          </a>
+        </div>
+      </div>
+    </section>
+  </body>
 </html>
 `;
   }
